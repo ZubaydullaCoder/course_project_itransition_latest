@@ -1,0 +1,40 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String     @id @default(cuid())
+  name          String
+  email         String     @unique
+  password      String
+  role          Role       @default(USER)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  templates     Template[]
+}
+
+model Template {
+  id          String    @id @default(cuid())
+  title       String
+  description String?   @db.Text
+  topic       String    // From predefined list
+  isPublic    Boolean   @default(false)
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    String
+  tags        String[]  // Array of tags
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([authorId])
+  @@index([title]) // Regular index for basic search
+}
+
+enum Role {
+  USER
+  ADMIN
+}
