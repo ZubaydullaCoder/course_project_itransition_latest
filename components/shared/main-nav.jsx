@@ -23,6 +23,10 @@ export async function MainNav() {
           <nav className="flex items-center gap-6">
             {session?.user ? (
               <div className="flex items-center gap-4">
+                {/* Add the Create Template button HERE, before the admin check */}
+                <Link href="/templates/create">
+                  <Button>Create Template</Button>
+                </Link>
                 {session.user.role === 'ADMIN' && (
                   <Link href="/admin">
                     <Button variant="outline">Admin Dashboard</Button>
