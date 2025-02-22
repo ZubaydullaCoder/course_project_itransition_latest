@@ -1,21 +1,30 @@
 // app/(admin)/admin/users/page.jsx
-import { DataTable } from '@/components/admin/users/data-table';
-import { columns } from '@/components/admin/users/columns';
+
 import { getUsers } from '@/lib/actions/admin-actions';
+import { auth } from '@/auth';
+import { AdminDataTable } from '@/components/admin/data-table/admin-data-table';
+import { usersTableColumns } from '@/components/admin/users/users-table-columns';
+import { Heading } from '@/components/ui/heading';
 
 export default async function UsersPage() {
-  const users = await getUsers();
+  const session = await auth();
+  const result = await getUsers();
+
+  if (result.error) {
+    return (
+      <div className="space-y-6">
+        <div className="text-destructive">Error: {result.error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Users Management</h1>
-        <p className="text-muted-foreground">
-          Manage user accounts and permissions
-        </p>
-      </div>
-
-      <DataTable columns={columns} data={users} />
+      <Heading
+        title="Users Management"
+        description="Manage user accounts and permissions"
+      />
+      <AdminDataTable columns={usersTableColumns} data={result.data || []} />
     </div>
   );
 }

@@ -146,7 +146,7 @@ export function MainNav({ user }) {
                   <Button variant="ghost">Templates</Button>
                 </Link>
                 {user.role === 'ADMIN' && (
-                  <Link href="/admin">
+                  <Link href="/admin/users">
                     <Button variant="outline">Admin</Button>
                   </Link>
                 )}

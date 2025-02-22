@@ -5,7 +5,7 @@ import { ResponsesList } from '@/components/responses/responses-list';
 export default async function ResponsesPage({ params }) {
   const { templateId } = await params;
   const result = await getTemplateWithResponses(templateId);
-
+  console.log({ result });
   if (result.error || !result.data) {
     notFound();
   }
