@@ -12,6 +12,8 @@ import {
   QUESTION_TYPES,
   QUESTION_TYPE_LABELS,
 } from '@/lib/constants/questions';
+import { useFormContext } from 'react-hook-form';
+import { FormControl, FormField, FormItem, FormMessage } from '../ui/form';
 
 export function SortableQuestionForm({
   id,
@@ -56,22 +58,29 @@ export function SortableQuestionForm({
           </div>
 
           <div className="space-y-4">
-            <div>
-              <Input
-                placeholder="Question Title"
-                value={initialData.text || ''}
-                onChange={(e) => onChange({ text: e.target.value })}
-              />
-            </div>
+            <FormItem>
+              <FormControl>
+                <Input
+                  placeholder="Question Title"
+                  value={initialData.text || ''}
+                  onChange={(e) => onChange({ text: e.target.value })}
+                />
+              </FormControl>
+              {!initialData.text && (
+                <FormMessage>Question title is required</FormMessage>
+              )}
+            </FormItem>
 
-            <div>
-              <Textarea
-                placeholder="Description (Optional)"
-                value={initialData.description || ''}
-                onChange={(e) => onChange({ description: e.target.value })}
-                rows={3}
-              />
-            </div>
+            <FormItem>
+              <FormControl>
+                <Textarea
+                  placeholder="Description (Optional)"
+                  value={initialData.description || ''}
+                  onChange={(e) => onChange({ description: e.target.value })}
+                  rows={3}
+                />
+              </FormControl>
+            </FormItem>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">

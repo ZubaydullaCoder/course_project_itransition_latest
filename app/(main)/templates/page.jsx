@@ -1,15 +1,17 @@
-import { getTemplates, searchTemplates } from '@/lib/actions/template-actions';
+import { getTemplates } from '@/lib/actions/template-actions';
 import { TemplatesList } from '@/components/templates/templates-list';
-import { TemplateSearch } from '@/components/templates/template-search';
+import { TemplateFilters } from '@/components/templates/template-filters';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 export default async function TemplatesPage({ searchParams }) {
-  const { query } = (await searchParams) || {};
-  //   const query = searchParams?.query;
-  const { data: templates, error } = query
-    ? await searchTemplates(query)
-    : await getTemplates();
+  const { query, topic, tag, filter } = (await searchParams) || {};
+  const { data: templates, error } = await getTemplates({
+    query,
+    topic,
+    tag,
+    filter,
+  });
 
   return (
     <div className="space-y-6">
@@ -23,14 +25,21 @@ export default async function TemplatesPage({ searchParams }) {
         </Link>
       </div>
 
-      <div className="max-w-md">
-        <TemplateSearch />
-      </div>
+      <TemplateFilters
+        currentTopic={topic}
+        currentTag={tag}
+        currentFilter={filter}
+      />
 
       {error ? (
         <div className="text-center text-muted-foreground">{error}</div>
       ) : (
-        <TemplatesList templates={templates || []} searchQuery={query} />
+        <TemplatesList
+          templates={templates || []}
+          searchQuery={query}
+          currentTopic={topic}
+          currentTag={tag}
+        />
       )}
     </div>
   );

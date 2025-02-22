@@ -38,6 +38,7 @@ export function QuestionsSection({ value = [], onChange }) {
       id: `temp_${Date.now()}`,
       type,
       text: '',
+      description: '',
       required: false,
     };
     const newQuestions = [...questions, newQuestion];
@@ -88,12 +89,13 @@ export function QuestionsSection({ value = [], onChange }) {
           strategy={verticalListSortingStrategy}
         >
           <div className="space-y-4">
-            {questions.map((question) => (
+            {questions.map((question, index) => (
               <SortableQuestionForm
                 key={question.id}
                 id={question.id}
                 type={question.type}
                 initialData={question}
+                index={index}
                 onChange={(changes) =>
                   handleQuestionChange(question.id, changes)
                 }

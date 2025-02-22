@@ -8,14 +8,15 @@ generator client {
 }
 
 model User {
-  id            String     @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String
-  email         String     @unique
-  password      String
-  role          Role       @default(USER)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  email         String         @unique
+  password      String?
+  role          Role          @default(USER)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
   templates     Template[]
+  formResponses FormResponse[]
 }
 
 model Template {
@@ -30,9 +31,24 @@ model Template {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   questions   Question[]
+  responses   FormResponse[]
+  allowedUsers  AllowedUser[] 
+  image       String?
 
   @@index([authorId])
   @@index([title]) // Regular index for basic search
+}
+
+model AllowedUser {
+  id         String   @id @default(cuid())
+  email      String
+  template   Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  templateId String
+  createdAt  DateTime @default(now())
+
+  @@unique([email, templateId]) // Prevent duplicate access grants
+  @@index([templateId])
+  @@index([email])
 }
 
 enum Role {
@@ -52,6 +68,36 @@ model Question {
   templateId    String
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  answers     Answer[]
 
   @@index([templateId])
+}
+
+model FormResponse {
+  id          String    @id @default(cuid())
+  template    Template  @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  templateId  String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  answers     Answer[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([templateId, userId]) // Ensures one response per user per template
+  @@index([templateId])
+  @@index([userId])
+}
+
+model Answer {
+  id              String       @id @default(cuid())
+  question        Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId      String
+  formResponse    FormResponse @relation(fields: [formResponseId], references: [id], onDelete: Cascade)
+  formResponseId  String
+  value           String       @db.Text
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([questionId])
+  @@index([formResponseId])
 }

@@ -62,6 +62,10 @@ export default {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      backgroundImage: {
+        'auth-gradient':
+          'linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0.7))',
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],

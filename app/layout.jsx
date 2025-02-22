@@ -1,20 +1,27 @@
 import { Inter } from 'next/font/google';
+import { auth } from '@/auth';
 import { Toaster } from '@/components/ui/toaster';
+
 import './globals.css';
+import { SessionProvider } from '@/providers/session-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'Forms Application',
-  description: 'Customizable forms application',
+  title: 'Forms App',
+  description: 'Create and share forms easily',
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const session = await auth();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body className={inter.className}>
-        {children}
-        <Toaster />
+        <SessionProvider session={session}>
+          {children}
+          <Toaster />
+        </SessionProvider>
       </body>
     </html>
   );

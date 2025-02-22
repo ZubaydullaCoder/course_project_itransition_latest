@@ -1,10 +1,9 @@
-import { MainNav } from '@/components/shared/main-nav';
+import { auth } from '@/auth';
+import { MainLayout } from '@/components/layout/main-layout';
+// import { MainLayout } from '@/components/layouts/main-layout';
 
-export default function MainLayout({ children }) {
-  return (
-    <div className="min-h-screen flex flex-col">
-      <MainNav />
-      <main className="flex-1 container mx-auto py-6 px-4">{children}</main>
-    </div>
-  );
+export default async function MainRootLayout({ children }) {
+  const session = await auth();
+
+  return <MainLayout user={session?.user}>{children}</MainLayout>;
 }

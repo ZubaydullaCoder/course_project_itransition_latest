@@ -32,11 +32,14 @@ import { QuestionsSection } from '@/components/questions/questions-section';
 import { TEMPLATE_TOPICS } from '@/lib/constants/templates';
 import { TemplateSchema } from '@/lib/utils/validators';
 import { updateTemplate } from '@/lib/actions/template-actions';
+import { UserSelect } from '@/components/templates/user-select';
+import { ImageUpload } from '@/components/ui/image-upload';
 
 export function TemplateEditForm({ template }) {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [questions, setQuestions] = useState(template.questions || []);
 
   const form = useForm({
@@ -47,6 +50,10 @@ export function TemplateEditForm({ template }) {
       topic: template.topic,
       tags: template.tags?.join(',') || '',
       isPublic: template.isPublic,
+      allowedUsers: template.allowedUsers
+        ? template.allowedUsers.map((u) => u.email).join(',')
+        : '',
+      image: template.image || '',
     },
   });
 
@@ -218,6 +225,51 @@ export function TemplateEditForm({ template }) {
                 </FormItem>
               )}
             />
+
+            {!form.watch('isPublic') && (
+              <FormField
+                control={form.control}
+                name="allowedUsers"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Allowed Users</FormLabel>
+                    <FormControl>
+                      <UserSelect
+                        value={field.value}
+                        onChange={field.onChange}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Select users who can access this template
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image</FormLabel>
+                  <FormControl>
+                    <ImageUpload
+                      value={field.value}
+                      onChange={field.onChange}
+                      disabled={isLoading}
+                      onUploadingChange={setIsUploading}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Add an optional image for your template
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
 
           <Separator className="my-8" />
@@ -239,11 +291,11 @@ export function TemplateEditForm({ template }) {
             type="button"
             variant="outline"
             onClick={() => router.back()}
-            disabled={isLoading}
+            disabled={isLoading || isUploading}
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" disabled={isLoading || isUploading}>
             {isLoading ? 'Saving...' : 'Save Changes'}
           </Button>
         </div>

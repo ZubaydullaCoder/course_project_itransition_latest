@@ -32,12 +32,18 @@ export function LoginForm() {
         ...data,
         redirect: false,
       });
-
+      // console.log({ resultError: });
       if (result?.error) {
+        // Match exact error messages from auth.js
+        console.log({ resultError: result.error });
+        const errorMessage =
+          result.error === 'Configuration' &&
+          'No account found with this email or The password you entered is incorrect.';
+
         toast({
           variant: 'destructive',
-          title: 'Error',
-          description: result.error,
+          title: 'Login Failed',
+          description: errorMessage,
         });
         return;
       }
@@ -45,21 +51,24 @@ export function LoginForm() {
       router.refresh();
       router.push('/');
       toast({
-        title: 'Success',
-        description: 'Logged in successfully',
+        title: 'Welcome back!',
+        description: 'You have successfully logged in.',
       });
     } catch (error) {
+      console.log({ error });
       if (error.errors) {
+        // Zod validation errors
         toast({
           variant: 'destructive',
-          title: 'Error',
+          title: 'Invalid Input',
           description: error.errors[0].message,
         });
       } else {
         toast({
           variant: 'destructive',
-          title: 'Error',
-          description: 'Something went wrong',
+          title: 'Login Failed',
+          description:
+            'Unable to sign in at the moment. Please try again later.',
         });
       }
     } finally {

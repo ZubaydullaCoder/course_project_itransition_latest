@@ -32,11 +32,14 @@ import { TEMPLATE_TOPICS } from '@/lib/constants/templates';
 import { TemplateSchema } from '@/lib/utils/validators';
 import { createTemplate } from '@/lib/actions/template-actions';
 import { TagInput } from '../ui/tag-input';
+import { UserSelect } from '@/components/templates/user-select';
+import { ImageUpload } from '@/components/ui/image-upload';
 
 export function TemplateCreateForm() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false); // Add this state
   const [questions, setQuestions] = useState([]);
 
   const form = useForm({
@@ -47,10 +50,29 @@ export function TemplateCreateForm() {
       topic: '',
       tags: '',
       isPublic: false,
+      allowedUsers: '', // Add new field
+      questions: [],
+      image: '',
     },
+    mode: 'onChange',
   });
 
   async function onSubmit(data) {
+    console.log('Form data:', data);
+    console.log('Questions:', questions);
+    console.log('Form errors:', form.formState.errors);
+
+    // Validate questions first
+    const hasEmptyQuestionTitle = questions.some((q) => !q.text?.trim());
+    if (hasEmptyQuestionTitle) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'All questions must have a title',
+      });
+      return;
+    }
+
     if (questions.length === 0) {
       toast({
         variant: 'destructive',
@@ -65,12 +87,18 @@ export function TemplateCreateForm() {
     try {
       const formData = new FormData();
 
-      // Add basic info
-      Object.entries(data).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
-
-      // Add questions
+      // Add basic info as strings
+      formData.append('title', data.title);
+      formData.append('description', data.description || '');
+      formData.append('topic', data.topic);
+      formData.append('tags', data.tags || '');
+      formData.append('isPublic', String(data.isPublic));
+      formData.append(
+        'allowedUsers',
+        data.isPublic ? '' : data.allowedUsers || ''
+      );
+      formData.append('image', data.image || '');
+      // Add questions as JSON string
       formData.append('questions', JSON.stringify(questions));
 
       const result = await createTemplate(formData);
@@ -90,6 +118,7 @@ export function TemplateCreateForm() {
       });
       router.push('/templates');
     } catch (error) {
+      console.error('Template creation error:', error);
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -214,6 +243,52 @@ export function TemplateCreateForm() {
                 </FormItem>
               )}
             />
+
+            {/* Add restricted access field */}
+            {!form.watch('isPublic') && (
+              <FormField
+                control={form.control}
+                name="allowedUsers"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Allowed Users</FormLabel>
+                    <FormControl>
+                      <UserSelect
+                        value={field.value}
+                        onChange={field.onChange}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Select users who can access this template
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image</FormLabel>
+                  <FormControl>
+                    <ImageUpload
+                      value={field.value}
+                      onChange={field.onChange}
+                      disabled={isLoading}
+                      onUploadingChange={setIsUploading} // Add this prop
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Add an optional image for your template
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
 
           <Separator className="my-8" />
@@ -235,11 +310,13 @@ export function TemplateCreateForm() {
             type="button"
             variant="outline"
             onClick={() => router.back()}
-            disabled={isLoading}
+            disabled={isLoading || isUploading} // Update disable condition
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" disabled={isLoading || isUploading}>
+            {' '}
+            {/* Update disable condition */}
             {isLoading ? 'Creating...' : 'Create Template'}
           </Button>
         </div>

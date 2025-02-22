@@ -33,6 +33,13 @@ export default auth((req) => {
     }
   }
 
+  // Protect form routes
+  if (req.nextUrl.pathname.startsWith('/forms')) {
+    if (!isLoggedIn) {
+      return NextResponse.redirect(new URL('/login', req.nextUrl));
+    }
+  }
+
   return null;
 });
 
