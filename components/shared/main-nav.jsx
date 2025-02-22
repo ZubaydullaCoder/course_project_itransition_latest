@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { ThemeToggle } from '@/components/shared/theme-toggle';
 
 export const mainNavItems = [
   {
@@ -150,6 +151,7 @@ export function MainNav({ user }) {
                     <Button variant="outline">Admin</Button>
                   </Link>
                 )}
+                <ThemeToggle /> {/* Add theme toggle here */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
@@ -171,6 +173,7 @@ export function MainNav({ user }) {
               </>
             ) : (
               <div className="flex items-center gap-4">
+                <ThemeToggle /> {/* Add theme toggle here */}
                 <Link href="/login">
                   <Button variant="ghost">Sign In</Button>
                 </Link>

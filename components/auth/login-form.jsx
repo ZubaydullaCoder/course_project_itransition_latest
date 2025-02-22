@@ -3,47 +3,49 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { LoginSchema } from '@/lib/utils/validators';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 
 export function LoginForm() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
-  async function onSubmit(event) {
-    event.preventDefault();
+  const form = useForm({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  async function onSubmit(data) {
     setIsLoading(true);
 
-    const formData = new FormData(event.currentTarget);
-    const data = {
-      email: formData.get('email'),
-      password: formData.get('password'),
-    };
-
     try {
-      // Validate form data
-      LoginSchema.parse(data);
-
       const result = await signIn('credentials', {
         ...data,
         redirect: false,
       });
-      // console.log({ resultError: });
-      if (result?.error) {
-        // Match exact error messages from auth.js
-        console.log({ resultError: result.error });
-        const errorMessage =
-          result.error === 'Configuration' &&
-          'No account found with this email or The password you entered is incorrect.';
 
+      if (result?.error) {
         toast({
           variant: 'destructive',
           title: 'Login Failed',
-          description: errorMessage,
+          description: 'Invalid email or password',
         });
         return;
       }
@@ -55,54 +57,59 @@ export function LoginForm() {
         description: 'You have successfully logged in.',
       });
     } catch (error) {
-      console.log({ error });
-      if (error.errors) {
-        // Zod validation errors
-        toast({
-          variant: 'destructive',
-          title: 'Invalid Input',
-          description: error.errors[0].message,
-        });
-      } else {
-        toast({
-          variant: 'destructive',
-          title: 'Login Failed',
-          description:
-            'Unable to sign in at the moment. Please try again later.',
-        });
-      }
+      toast({
+        variant: 'destructive',
+        title: 'Login Failed',
+        description: 'Unable to sign in at the moment. Please try again later.',
+      });
     } finally {
       setIsLoading(false);
     }
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
           name="email"
-          type="email"
-          placeholder="name@example.com"
-          required
-          disabled={isLoading}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type="email"
+                  placeholder="name@example.com"
+                  disabled={isLoading}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
+        <FormField
+          control={form.control}
           name="password"
-          type="password"
-          placeholder="••••••••"
-          required
-          disabled={isLoading}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type="password"
+                  placeholder="••••••••"
+                  disabled={isLoading}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </div>
-      <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? 'Loading...' : 'Sign In'}
-      </Button>
-    </form>
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? 'Loading...' : 'Sign In'}
+        </Button>
+      </form>
+    </Form>
   );
 }

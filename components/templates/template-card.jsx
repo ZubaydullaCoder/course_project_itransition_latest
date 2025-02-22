@@ -43,7 +43,7 @@ import { useState } from 'react';
 import { deleteTemplate } from '@/lib/actions/template-actions';
 import { formatDate } from '@/lib/utils';
 
-export function TemplateCard({ template, isOwner }) {
+export function TemplateCard({ template, isOwner, isAdmin }) {
   const router = useRouter();
   const { toast } = useToast();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -111,7 +111,7 @@ export function TemplateCard({ template, isOwner }) {
       }}
     >
       {/* Image Section */}
-      <div className="relative w-full h-[140px]">
+      <div className="relative w-full h-[180px]">
         {template.image ? (
           <Image
             src={template.image}
@@ -129,29 +129,30 @@ export function TemplateCard({ template, isOwner }) {
       </div>
 
       {/* Header Section - Remove Link since entire card is clickable */}
-      <CardHeader className="p-4 space-y-2">
+      <CardHeader className="px-3 py-2 space-y-2">
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-semibold text-lg line-clamp-1 flex-1 group-hover:underline">
             {template.title}
           </h3>
-          {template.isPublic ? (
+          {/* {template.isPublic ? (
             <Globe className="h-4 w-4 text-muted-foreground flex-shrink-0" />
           ) : (
             <Lock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-          )}
+          )} */}
         </div>
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <span>by {template.author?.name}</span>
         </div>
-        <p className="text-sm text-muted-foreground line-clamp-2">
+
+        {/* <p className="text-sm text-muted-foreground line-clamp-2">
           {template.description || 'No description'}
-        </p>
+        </p> */}
       </CardHeader>
 
       {/* Content Section */}
-      <CardContent className="flex-1 p-4">
+      <CardContent className="px-3 py-1">
         <div className="flex justify-between items-start">
-          <div className="space-y-2">
+          <div className="flex justify-start gap-4 w-full">
             <Badge variant="secondary" className="text-xs">
               {template.topic}
             </Badge>
@@ -165,7 +166,7 @@ export function TemplateCard({ template, isOwner }) {
 
         {/* Tags Section */}
         {template.tags?.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-4">
+          <div className="flex flex-wrap gap-2 my-3">
             {template.tags.map((tag) => (
               <Badge key={tag} variant="outline" className="text-xs">
                 {tag}
@@ -176,9 +177,9 @@ export function TemplateCard({ template, isOwner }) {
       </CardContent>
 
       {/* Footer Section - Updated action buttons */}
-      <CardFooter className="flex justify-between items-center p-4 border-t">
-        <span className="text-xs text-muted-foreground">
-          Created {formatDate(template.createdAt)}
+      <CardFooter className="flex justify-between items-center px-4 py-1 border-t">
+        <span className="text-xs line-clamp-1 text-muted-foreground">
+          {formatDate(template.createdAt)}
         </span>
 
         <TooltipProvider>
@@ -195,8 +196,8 @@ export function TemplateCard({ template, isOwner }) {
               onClick={copyLink}
             />
 
-            {/* Owner-specific actions */}
-            {isOwner && (
+            {/* Owner or Admin actions */}
+            {(isOwner || isAdmin) && (
               <>
                 <ActionButton
                   icon={<BarChart className="h-4 w-4" />}

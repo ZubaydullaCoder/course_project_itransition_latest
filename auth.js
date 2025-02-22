@@ -24,6 +24,7 @@ export const {
       if (token) {
         session.user.id = token.id;
         session.user.role = token.role;
+        session.user.isActive = token.isActive; // Add isActive status
       }
       return session;
     },

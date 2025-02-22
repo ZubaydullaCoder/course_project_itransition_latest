@@ -3,6 +3,7 @@ import { TemplateCard } from '@/components/templates/template-card';
 
 export async function TemplatesList({ templates }) {
   const session = await auth();
+  const isAdmin = session?.user?.role === 'ADMIN';
 
   if (templates.length === 0) {
     return (
@@ -21,6 +22,7 @@ export async function TemplatesList({ templates }) {
           key={template.id}
           template={template}
           isOwner={template.authorId === session?.user?.id}
+          isAdmin={isAdmin}
         />
       ))}
     </div>

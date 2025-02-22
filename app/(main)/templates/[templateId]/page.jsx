@@ -7,13 +7,18 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { QUESTION_TYPE_LABELS } from '@/lib/constants/questions';
+import {
+  CommentForm,
+  CommentList,
+} from '@/components/templates/template-comments';
+import { TemplateLikeButton } from '@/components/templates/template-like-button';
 
 export default async function TemplatePage({ params }) {
   const { templateId } = await params;
   const session = await auth();
   const { data: template, error } = await getTemplateById(templateId);
 
-  if (error) {
+  if (error || !template) {
     notFound();
   }
 
@@ -40,6 +45,14 @@ export default async function TemplatePage({ params }) {
             </Button>
           )}
         </div>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <TemplateLikeButton
+          templateId={template.id}
+          initialLiked={template.likes.length > 0}
+          likeCount={template._count.likes}
+        />
       </div>
 
       <Separator />
@@ -75,11 +88,14 @@ export default async function TemplatePage({ params }) {
       {/* Comments Section */}
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Comments</h2>
-        <Card className="p-4">
+        {session?.user ? (
+          <CommentForm templateId={template.id} />
+        ) : (
           <p className="text-center text-muted-foreground">
-            Comments feature coming soon
+            Please sign in to comment
           </p>
-        </Card>
+        )}
+        <CommentList comments={template.comments} />
       </div>
     </div>
   );

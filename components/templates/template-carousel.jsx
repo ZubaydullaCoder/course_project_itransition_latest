@@ -38,7 +38,7 @@ export function TemplateCarousel({ templates }) {
             <CardHeader>
               <Link
                 href={`/templates/${template.id}`}
-                className="text-lg font-semibold hover:underline"
+                className="text-lg font-semibold hover:underline line-clamp-1"
               >
                 {template.title}
               </Link>
