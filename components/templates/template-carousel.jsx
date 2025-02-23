@@ -13,8 +13,12 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
+import { EmptyTemplateCard } from './empty-template-card';
 
-export function TemplateCarousel({ templates }) {
+export function TemplateCarousel({ templates, count = 5 }) {
+  const emptySlots = Math.max(0, count - templates.length);
+  const placeholders = Array(emptySlots).fill(null);
+
   return (
     <Swiper
       modules={[Navigation, Pagination, A11y]}
@@ -69,6 +73,12 @@ export function TemplateCarousel({ templates }) {
               </Link>
             </CardFooter>
           </Card>
+        </SwiperSlide>
+      ))}
+
+      {placeholders.map((_, index) => (
+        <SwiperSlide key={`empty-${index}`}>
+          <EmptyTemplateCard />
         </SwiperSlide>
       ))}
     </Swiper>

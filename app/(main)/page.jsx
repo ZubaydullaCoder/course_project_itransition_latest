@@ -10,8 +10,8 @@ import { Separator } from '@/components/ui/separator';
 
 export default async function HomePage() {
   const session = await auth();
-  const latestTemplates = await getLatestTemplates(5); 
-  const topTemplates = await getTopTemplates(5); 
+  const latestTemplates = await getLatestTemplates(5);
+  const topTemplates = await getTopTemplates(5);
   const popularTags = await getPopularTags();
 
   return (
@@ -35,7 +35,7 @@ export default async function HomePage() {
       {}
       <section>
         <h2 className="text-2xl font-bold mb-4">Latest Templates</h2>
-        <TemplateCarousel templates={latestTemplates} />
+        <TemplateCarousel templates={latestTemplates} count={5} />
       </section>
 
       <Separator />
@@ -43,7 +43,7 @@ export default async function HomePage() {
       {}
       <section>
         <h2 className="text-2xl font-bold mb-4">Most Popular Templates</h2>
-        <TemplateCarousel templates={topTemplates} />
+        <TemplateCarousel templates={topTemplates} count={5} />
       </section>
 
       <Separator />
