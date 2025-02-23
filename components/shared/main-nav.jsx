@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useTransition, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useDebounce } from '@/hooks/use-debounce';
@@ -35,7 +36,9 @@ export const mainNavItems = [
   },
 ];
 
-export function MainNav({ user }) {
+export function MainNav() {
+  const { data: session } = useSession();
+  const user = session?.user;
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
