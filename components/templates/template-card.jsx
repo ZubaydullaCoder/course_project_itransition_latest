@@ -100,7 +100,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
 
   return (
     <Card
-      className="flex flex-col h-[380px] hover:shadow-md transition-shadow cursor-pointer group"
+      className="h-[380px] hover:shadow-md transition-shadow cursor-pointer group"
       onClick={(e) => {
         // Prevent navigation if clicking on action buttons
         if (e.target.closest('button')) {
@@ -132,60 +132,59 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
           />
         )}
       </div>
-
-      {/* Header Section - Remove Link since entire card is clickable */}
-      <CardHeader className="px-3 py-2 space-y-2">
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="font-semibold text-lg line-clamp-1 flex-1 group-hover:underline">
-            {template.title}
-          </h3>
-          {template.isPublic ? (
-            <Globe className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-          ) : (
-            <Lock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-          )}
-        </div>
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <span>by {template.author?.name}</span>
-          <span className="text-xs line-clamp-1 text-muted-foreground">
-            {formatDate(template.createdAt)}
-          </span>
-        </div>
-
-        <p className="text-sm text-muted-foreground line-clamp-2">
-          {template.description || 'No description'}
-        </p>
-      </CardHeader>
-
-      {/* Content Section */}
-      <CardContent className="px-3 py-1">
-        <div className="flex justify-between items-start">
-          <div className="flex justify-start gap-4 w-full">
-            <Badge variant="secondary" className="text-xs">
-              {template.topic}
-            </Badge>
-            {template._count?.responses > 0 && (
-              <div className="text-sm text-muted-foreground">
-                {template._count.responses} responses
-              </div>
+      <div className="h-[9.5rem]">
+        {/* Header Section - Remove Link since entire card is clickable */}
+        <CardHeader className="px-3 py-2 space-y-2">
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="font-semibold text-lg line-clamp-1 flex-1 group-hover:underline">
+              {template.title}
+            </h3>
+            {template.isPublic ? (
+              <Globe className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            ) : (
+              <Lock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             )}
           </div>
-        </div>
-
-        {/* Tags Section */}
-        {template.tags?.length > 0 && (
-          <div className="flex flex-wrap gap-2 my-3">
-            {template.tags.map((tag) => (
-              <Badge key={tag} variant="outline" className="text-xs">
-                {tag}
-              </Badge>
-            ))}
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <span>by {template.author?.name}</span>
+            <span className="text-xs line-clamp-1 text-muted-foreground">
+              {formatDate(template.createdAt)}
+            </span>
           </div>
-        )}
-      </CardContent>
 
+          <p className="text-sm text-muted-foreground line-clamp-2">
+            {template.description || 'No description'}
+          </p>
+        </CardHeader>
+
+        {/* Content Section */}
+        <CardContent className="px-3 py-1">
+          <div className="flex justify-between items-start">
+            <div className="flex justify-start items-center gap-4 w-full">
+              <Badge variant="secondary" className="text-xs">
+                {template.topic}
+              </Badge>
+              {template._count?.responses > 0 && (
+                <div className="text-sm text-muted-foreground">
+                  {template._count.responses} responses
+                </div>
+              )}
+              {/* Tags Section */}
+              {template.tags?.length > 0 && (
+                <div className="flex flex-wrap gap-2 my-3">
+                  {template.tags.map((tag) => (
+                    <Badge key={tag} variant="outline" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </div>
       {/* Footer Section - Updated action buttons */}
-      <CardFooter className="flex justify-end items-center px-4 py-1 border-t">
+      <CardFooter className="flex items-center justify-end px-4 flex-grow-0 py-1 border-t">
         <TooltipProvider>
           <div className="flex items-center gap-1">
             {/* Common actions for all users */}

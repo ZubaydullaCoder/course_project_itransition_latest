@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 export default async function TemplatesPage({ searchParams }) {
-  const { query, topic, tag, filter, status, sort } =
-    (await searchParams) || {};
+  const { query, topic, tag, filter, status } = (await searchParams) || {};
+  // Set default sort to 'latest' if not specified
+  const sort = searchParams?.sort || 'latest';
+
   const { data: templates, error } = await getTemplates({
     query,
     topic,

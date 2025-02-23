@@ -29,7 +29,7 @@ export function TemplateFilters({
   currentTag,
   currentFilter,
   currentStatus,
-  currentSort,
+  currentSort = 'latest', // Default to 'latest'
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -80,9 +80,9 @@ export function TemplateFilters({
     router.push(`/templates${queryString ? `?${queryString}` : ''}`);
   };
 
-  const handleSortChange = (sort) => {
+  const handleSortChange = (newSort) => {
     const queryString = createQueryString({
-      sort: sort === currentSort ? '' : sort,
+      sort: newSort,
     });
     router.push(`/templates${queryString ? `?${queryString}` : ''}`);
   };
