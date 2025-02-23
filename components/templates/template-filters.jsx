@@ -1,4 +1,4 @@
-// components/templates/template-filters.jsx
+
 'use client';
 
 import { useCallback } from 'react';
@@ -29,7 +29,7 @@ export function TemplateFilters({
   currentTag,
   currentFilter,
   currentStatus,
-  currentSort = 'latest', // Default to 'latest'
+  currentSort = 'latest', 
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -38,7 +38,7 @@ export function TemplateFilters({
     (updates) => {
       const params = new URLSearchParams(searchParams);
 
-      // Update all provided parameters
+      
       Object.entries(updates).forEach(([key, value]) => {
         if (value) {
           params.set(key, value);
@@ -111,7 +111,7 @@ export function TemplateFilters({
 
         <Separator />
 
-        {/* Status Filters */}
+        {}
         <div>
           <h3 className="mb-2 text-sm font-medium tracking-tight">Status</h3>
           <div className="flex flex-wrap gap-2">
@@ -132,7 +132,7 @@ export function TemplateFilters({
 
         <Separator />
 
-        {/* Sort Options */}
+        {}
         <div>
           <h3 className="mb-2 text-sm font-medium tracking-tight">Sort By</h3>
           <div className="flex flex-wrap gap-2">
@@ -153,7 +153,7 @@ export function TemplateFilters({
 
         <Separator />
 
-        {/* Topics Filter */}
+        {}
         <div>
           <h3 className="mb-2 text-sm font-medium tracking-tight">Topics</h3>
           <ScrollArea className="w-full whitespace-nowrap">
@@ -174,7 +174,7 @@ export function TemplateFilters({
           </ScrollArea>
         </div>
 
-        {/* Active Filters Display */}
+        {}
         {(currentFilter || currentTopic || currentTag) && (
           <>
             <Separator />

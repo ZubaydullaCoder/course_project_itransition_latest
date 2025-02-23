@@ -1,4 +1,4 @@
-// components/ui/image-upload.jsx
+
 'use client';
 
 import { useState } from 'react';
@@ -16,7 +16,7 @@ export function ImageUpload({ value, onChange, disabled, onUploadingChange }) {
     try {
       setIsUploading(true);
       onUploadingChange?.(true);
-      // Create FormData
+      
       const formData = new FormData();
       formData.append('file', file);
       formData.append(
@@ -24,7 +24,7 @@ export function ImageUpload({ value, onChange, disabled, onUploadingChange }) {
         process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
       );
 
-      // Upload to Cloudinary
+      
       const response = await fetch(
         `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
         {

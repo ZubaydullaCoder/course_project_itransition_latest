@@ -2,9 +2,7 @@
 
 import { Card } from '@/components/ui/card';
 import { TextIcon, AlignLeft, Hash, CheckSquare } from 'lucide-react';
-import {
-  QUESTION_TYPES,
-} from '@/lib/constants/questions';
+import { QUESTION_TYPES } from '@/lib/constants/questions';
 
 export function QuestionTypeCards({ onSelect, questionCounts = {} }) {
   const typeConfig = [

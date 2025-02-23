@@ -1,4 +1,4 @@
-// components/ui/heading.jsx
+
 export function Heading({ title, description }) {
   return (
     <div>

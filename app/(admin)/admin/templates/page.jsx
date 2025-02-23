@@ -1,4 +1,4 @@
-// app/(admin)/admin/templates/page.jsx
+
 import { getAdminTemplates } from '@/lib/actions/admin-actions';
 import { AdminDataTable } from '@/components/admin/data-table/admin-data-table';
 import { adminTemplatesColumns } from '@/components/admin/templates/admin-templates-columns';

@@ -39,7 +39,7 @@ export function TemplateCreateForm() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [isUploading, setIsUploading] = useState(false); // Add this state
+  const [isUploading, setIsUploading] = useState(false); 
   const [questions, setQuestions] = useState([]);
 
   const form = useForm({
@@ -58,7 +58,7 @@ export function TemplateCreateForm() {
   });
 
   async function onSubmit(data) {
-    // Validate questions first
+    
     const hasEmptyQuestionTitle = questions.some((q) => !q.text?.trim());
     if (hasEmptyQuestionTitle) {
       toast({
@@ -83,7 +83,7 @@ export function TemplateCreateForm() {
     try {
       const formData = new FormData();
 
-      // Add basic info as strings
+      
       formData.append('title', data.title);
       formData.append('description', data.description || '');
       formData.append('topic', data.topic);
@@ -240,7 +240,7 @@ export function TemplateCreateForm() {
               )}
             />
 
-            {/* Add restricted access field */}
+            {}
             {!form.watch('isPublic') && (
               <FormField
                 control={form.control}
@@ -275,7 +275,7 @@ export function TemplateCreateForm() {
                       value={field.value}
                       onChange={field.onChange}
                       disabled={isLoading}
-                      onUploadingChange={setIsUploading} // Add this prop
+                      onUploadingChange={setIsUploading} 
                     />
                   </FormControl>
                   <FormDescription>
@@ -306,13 +306,13 @@ export function TemplateCreateForm() {
             type="button"
             variant="outline"
             onClick={() => router.back()}
-            disabled={isLoading || isUploading} // Update disable condition
+            disabled={isLoading || isUploading} 
           >
             Cancel
           </Button>
           <Button type="submit" disabled={isLoading || isUploading}>
             {' '}
-            {/* Update disable condition */}
+            {}
             {isLoading ? 'Creating...' : 'Create Template'}
           </Button>
         </div>

@@ -1,4 +1,4 @@
-// components/forms/responses-table.jsx
+
 'use client';
 
 import { useState } from 'react';

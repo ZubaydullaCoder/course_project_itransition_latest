@@ -8,9 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Grip, Trash2 } from 'lucide-react';
-import {
-  QUESTION_TYPE_LABELS,
-} from '@/lib/constants/questions';
+import { QUESTION_TYPE_LABELS } from '@/lib/constants/questions';
 import { FormControl, FormItem, FormMessage } from '../ui/form';
 
 export function SortableQuestionForm({

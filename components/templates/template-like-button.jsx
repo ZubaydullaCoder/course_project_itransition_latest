@@ -1,4 +1,4 @@
-// components/templates/template-like-button.jsx
+
 'use client';
 
 import { useState } from 'react';

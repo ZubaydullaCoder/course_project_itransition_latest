@@ -101,7 +101,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
     <Card
       className="h-[380px] hover:shadow-md transition-shadow cursor-pointer group"
       onClick={(e) => {
-        // Prevent navigation if clicking on action buttons
+        
         if (e.target.closest('button')) {
           e.stopPropagation();
           return;
@@ -109,7 +109,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
         router.push(`/templates/${template.id}`);
       }}
     >
-      {/* Image Section */}
+      {}
       <div className="relative w-full h-[180px]">
         {template.image ? (
           <Image
@@ -132,7 +132,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
         )}
       </div>
       <div className="h-[9.5rem]">
-        {/* Header Section - Remove Link since entire card is clickable */}
+        {}
         <CardHeader className="px-3 py-2 space-y-2">
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-semibold text-lg line-clamp-1 flex-1 group-hover:underline">
@@ -156,7 +156,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
           </p>
         </CardHeader>
 
-        {/* Content Section */}
+        {}
         <CardContent className="px-3 py-1">
           <div className="flex justify-between items-start">
             <div className="flex justify-start items-center gap-4 w-full">
@@ -168,7 +168,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
                   {template._count.responses} responses
                 </div>
               )}
-              {/* Tags Section */}
+              {}
               {template.tags?.length > 0 && (
                 <div className="flex flex-wrap gap-2 my-3">
                   {template.tags.map((tag) => (
@@ -182,11 +182,11 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
           </div>
         </CardContent>
       </div>
-      {/* Footer Section - Updated action buttons */}
+      {}
       <CardFooter className="flex items-center justify-end px-4 flex-grow-0 py-1 border-t">
         <TooltipProvider>
           <div className="flex items-center gap-1">
-            {/* Common actions for all users */}
+            {}
             <ActionButton
               icon={<ClipboardEdit className="h-4 w-4" />}
               tooltip="Fill Form"
@@ -204,7 +204,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
               onClick={copyLink}
             />
 
-            {/* Owner or Admin actions */}
+            {}
             {(isOwner || isAdmin) && (
               <>
                 <ActionButton
@@ -235,7 +235,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
         </TooltipProvider>
       </CardFooter>
 
-      {/* Delete Dialog */}
+      {}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -261,7 +261,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
   );
 }
 
-// Helper component for action buttons
+
 function ActionButton({ icon, tooltip, onClick }) {
   return (
     <Tooltip>

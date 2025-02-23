@@ -1,4 +1,4 @@
-// components/admin/users/users-table-columns.jsx
+
 'use client';
 
 import { Badge } from '@/components/ui/badge';

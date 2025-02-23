@@ -65,7 +65,7 @@ export function ResponseDetail({ templateId, response }) {
     const answer = response.answers.find((a) => a.questionId === questionId);
     if (!answer?.value) return '-';
 
-    // Format based on question type
+    
     const question = response.template.questions.find(
       (q) => q.id === questionId
     );
@@ -82,7 +82,7 @@ export function ResponseDetail({ templateId, response }) {
   return (
     <>
       <Card className="p-6 space-y-6">
-        {/* Header with user info and submission date */}
+        {}
         <div>
           <div className="flex justify-between items-start">
             <div>
@@ -106,7 +106,7 @@ export function ResponseDetail({ templateId, response }) {
 
         <Separator />
 
-        {/* Questions and Answers */}
+        {}
         <div className="space-y-6">
           {response.template.questions.map((question) => (
             <div key={question.id} className="space-y-2">
@@ -129,7 +129,7 @@ export function ResponseDetail({ templateId, response }) {
         </div>
       </Card>
 
-      {/* Actions */}
+      {}
       <div className="flex justify-end gap-4">
         <Button
           variant="outline"
@@ -139,7 +139,7 @@ export function ResponseDetail({ templateId, response }) {
           Back
         </Button>
 
-        {/* Show edit button only to response author */}
+        {}
         {isAuthor && (
           <Button asChild>
             <Link href={`/forms/${templateId}`} className="gap-2">
@@ -157,7 +157,7 @@ export function ResponseDetail({ templateId, response }) {
         </Button>
       </div>
 
-      {/* Delete Confirmation Dialog */}
+      {}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>

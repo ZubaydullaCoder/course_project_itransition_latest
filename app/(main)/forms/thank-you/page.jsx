@@ -1,4 +1,4 @@
-// app/forms/thank-you/page.jsx
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';

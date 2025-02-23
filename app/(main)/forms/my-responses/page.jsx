@@ -1,4 +1,4 @@
-// app/(main)/forms/my-responses/page.jsx
+
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { getUserResponses } from '@/lib/actions/form-actions';

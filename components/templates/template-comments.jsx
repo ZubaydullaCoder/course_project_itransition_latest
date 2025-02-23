@@ -1,4 +1,4 @@
-// components/templates/template-comments.jsx
+
 'use client';
 
 import { useState } from 'react';

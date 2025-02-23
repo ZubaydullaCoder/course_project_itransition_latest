@@ -1,4 +1,4 @@
-// components/admin/data-table/admin-data-table.jsx
+
 'use client';
 
 import {

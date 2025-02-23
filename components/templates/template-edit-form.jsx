@@ -72,15 +72,15 @@ export function TemplateEditForm({ template }) {
     try {
       const formData = new FormData();
 
-      // Add template ID
+      
       formData.append('id', template.id);
 
-      // Add basic info
+      
       Object.entries(data).forEach(([key, value]) => {
         formData.append(key, value);
       });
 
-      // Add questions
+      
       formData.append('questions', JSON.stringify(questions));
 
       const result = await updateTemplate(formData);

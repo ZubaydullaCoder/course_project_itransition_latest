@@ -7,7 +7,7 @@ import Link from 'next/link';
 export default async function TemplatesPage({ searchParams }) {
   const { query, topic, tag, filter, status, sort } =
     (await searchParams) || {};
-  // Set default sort to 'latest' if not specified
+  
 
   const sortDefault = sort || 'latest';
 

@@ -1,4 +1,4 @@
-// components/templates/user-select.jsx
+
 'use client';
 
 import { useState, useCallback } from 'react';
@@ -144,7 +144,7 @@ export function UserSelect({ value, onChange, disabled }) {
         </PopoverContent>
       </Popover>
 
-      {/* Selected Users List */}
+      {}
       <div className="flex flex-wrap gap-2">
         {selectedUsers.map((email) => (
           <div

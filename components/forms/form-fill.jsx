@@ -22,10 +22,10 @@ export function FormFill({ template }) {
   const [isLoading, setIsLoading] = useState(true);
   const [existingResponse, setExistingResponse] = useState(null);
 
-  // Create validation schema
+  
   const validationSchema = createFormResponseSchema(template.questions);
 
-  // Initialize form with validation
+  
   const form = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: template.questions.reduce((acc, question) => {

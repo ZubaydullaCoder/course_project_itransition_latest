@@ -1,6 +1,6 @@
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
-// import { AuthLayout } from '@/components/layouts/auth-layout';
+
 import { AuthLayout } from '@/components/layout/auth-layout';
 
 export default async function AuthRootLayout({ children }) {

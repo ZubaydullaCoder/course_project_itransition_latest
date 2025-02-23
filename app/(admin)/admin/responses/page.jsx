@@ -1,4 +1,4 @@
-// app/(admin)/admin/responses/page.jsx
+
 
 import { Heading } from '@/components/ui/heading';
 

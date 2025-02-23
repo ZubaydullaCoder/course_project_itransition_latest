@@ -26,7 +26,7 @@ export default async function TemplatePage({ params }) {
 
   return (
     <div className="container max-w-4xl py-6 space-y-6">
-      {/* Header Section */}
+      {}
       <div className="flex items-start justify-between">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold">{template.title}</h1>
@@ -57,7 +57,7 @@ export default async function TemplatePage({ params }) {
 
       <Separator />
 
-      {/* Questions List */}
+      {}
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Questions</h2>
         {template.questions.map((question, index) => (
@@ -85,7 +85,7 @@ export default async function TemplatePage({ params }) {
 
       <Separator />
 
-      {/* Comments Section */}
+      {}
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Comments</h2>
         {session?.user ? (

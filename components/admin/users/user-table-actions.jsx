@@ -1,4 +1,4 @@
-// components/admin/users/user-table-actions.jsx
+
 'use client';
 
 import { useState } from 'react';

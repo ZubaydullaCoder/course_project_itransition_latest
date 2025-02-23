@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import {
-  FileEdit, // for fill out
-  Link2, // for share
-  Check, // for copied state
+  FileEdit, 
+  Link2, 
+  Check, 
 } from 'lucide-react';
 import {
   Tooltip,

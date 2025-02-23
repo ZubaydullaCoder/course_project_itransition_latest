@@ -1,4 +1,4 @@
-// components/shared/theme-toggle.jsx
+
 'use client';
 
 import { Moon, Sun } from 'lucide-react';

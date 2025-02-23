@@ -1,4 +1,4 @@
-// components/admin/templates/admin-template-actions.jsx
+
 'use client';
 
 import { useState } from 'react';

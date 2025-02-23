@@ -13,7 +13,7 @@ const MDEditor = dynamic(
 export function MarkdownEditor({ value, onChange, label, error, className }) {
   const [mounted, setMounted] = useState(false);
 
-  // Avoid hydration issues
+  
   if (!mounted) {
     setMounted(true);
     return null;

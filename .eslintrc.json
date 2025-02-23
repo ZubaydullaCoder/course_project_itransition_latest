@@ -19,6 +19,8 @@
   "plugins": ["react", "react-hooks", "unused-imports"],
   "rules": {
     "no-unused-vars": "off", // Turn off the base rule
+    // "no-comments": "error",
+    "multiline-comment-style": ["error", "starred-block"],
     "unused-imports/no-unused-imports": "error",
     "unused-imports/no-unused-vars": [
       "warn",

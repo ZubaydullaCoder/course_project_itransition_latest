@@ -1,4 +1,4 @@
-// components/templates/top-templates-table.jsx
+
 import {
   Table,
   TableBody,

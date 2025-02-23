@@ -151,7 +151,7 @@ export function MainNav({ user }) {
                     <Button variant="outline">Admin</Button>
                   </Link>
                 )}
-                <ThemeToggle /> {/* Add theme toggle here */}
+                <ThemeToggle /> {}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
@@ -173,7 +173,7 @@ export function MainNav({ user }) {
               </>
             ) : (
               <div className="flex items-center gap-4">
-                <ThemeToggle /> {/* Add theme toggle here */}
+                <ThemeToggle /> {}
                 <Link href="/login">
                   <Button variant="ghost">Sign In</Button>
                 </Link>

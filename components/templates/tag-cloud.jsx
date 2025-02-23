@@ -1,4 +1,4 @@
-// components/templates/tag-cloud.jsx
+
 'use client';
 
 import { useRouter } from 'next/navigation';

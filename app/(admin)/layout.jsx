@@ -1,4 +1,4 @@
-// app/(admin)/layout.jsx
+
 import { AdminSidebar } from '@/components/admin/admin-sidebar';
 import { MainNav } from '@/components/shared/main-nav';
 import { auth } from '@/auth';
