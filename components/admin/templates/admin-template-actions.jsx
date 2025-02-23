@@ -25,12 +25,11 @@ import { Eye, Pencil, Trash2, BarChart } from 'lucide-react';
 import { deleteTemplate } from '@/lib/actions/admin-actions';
 
 export function AdminTemplateActions({ template }) {
-  if (!template) return null;
-
   const router = useRouter();
   const { toast } = useToast();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  if (!template) return null;
 
   async function onDelete() {
     setIsLoading(true);

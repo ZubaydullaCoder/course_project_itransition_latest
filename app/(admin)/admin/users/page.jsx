@@ -1,13 +1,12 @@
 // app/(admin)/admin/users/page.jsx
 
 import { getUsers } from '@/lib/actions/admin-actions';
-import { auth } from '@/auth';
+
 import { AdminDataTable } from '@/components/admin/data-table/admin-data-table';
 import { usersTableColumns } from '@/components/admin/users/users-table-columns';
 import { Heading } from '@/components/ui/heading';
 
 export default async function UsersPage() {
-  const session = await auth();
   const result = await getUsers();
 
   if (result.error) {

@@ -29,7 +29,6 @@ export function ResponseDetail({ templateId, response }) {
   const isAuthor = session?.data?.user?.id === response.userId;
   const [isLoading, setIsLoading] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  console.log({ response });
   const handleDelete = async () => {
     setIsLoading(true);
     try {

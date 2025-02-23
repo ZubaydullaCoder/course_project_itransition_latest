@@ -29,12 +29,11 @@ import {
 } from '@/lib/actions/admin-actions';
 
 export function UserTableActions({ user }) {
-  if (!user) return null;
-
   const router = useRouter();
   const { toast } = useToast();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  if (!user) return null;
 
   async function onToggleStatus() {
     setIsLoading(true);

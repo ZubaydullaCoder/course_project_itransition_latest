@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useThemeStore } from '@/lib/stores/theme-store';
 
 export function ThemeToggle() {
-  const { theme, toggleTheme } = useThemeStore();
+  const { toggleTheme } = useThemeStore();
 
   return (
     <Button variant="ghost" size="icon" onClick={toggleTheme}>

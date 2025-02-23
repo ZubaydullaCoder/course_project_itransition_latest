@@ -5,7 +5,6 @@ import { ResponseDetail } from '@/components/responses/response-detail';
 export default async function ResponseDetailPage({ params }) {
   const { templateId, responseId } = await params;
   const result = await getResponseDetails(templateId, responseId);
-  console.log({ result });
   if (result.error || !result.data) {
     notFound();
   }

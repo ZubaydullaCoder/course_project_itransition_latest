@@ -54,7 +54,7 @@ export function FormFill({ template }) {
       setIsLoading(false);
     }
     checkResponse();
-  }, [template.id, form]);
+  }, [template.id, form, template.questions]);
 
   const onSubmit = async (data) => {
     try {

@@ -58,10 +58,6 @@ export function TemplateCreateForm() {
   });
 
   async function onSubmit(data) {
-    console.log('Form data:', data);
-    console.log('Questions:', questions);
-    console.log('Form errors:', form.formState.errors);
-
     // Validate questions first
     const hasEmptyQuestionTitle = questions.some((q) => !q.text?.trim());
     if (hasEmptyQuestionTitle) {

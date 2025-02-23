@@ -1,17 +1,16 @@
 'use client';
 
-import Link from 'next/link';
 import Image from 'next/image';
 import {
-  ImageIcon,
   Pencil,
-  Share2,
   Eye,
   BarChart,
   Trash2,
   ClipboardEdit,
   Globe,
   Lock,
+  Check,
+  Link2,
 } from 'lucide-react';
 import {
   Card,
@@ -194,8 +193,14 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
               onClick={() => router.push(`/forms/${template.id}`)}
             />
             <ActionButton
-              icon={<Share2 className="h-4 w-4" />}
-              tooltip="Share Form"
+              icon={
+                copied ? (
+                  <Check className="h-4 w-4 text-green-600" />
+                ) : (
+                  <Link2 className="h-4 w-4" />
+                )
+              }
+              tooltip={copied ? 'Copied!' : 'Copy Link'}
               onClick={copyLink}
             />
 

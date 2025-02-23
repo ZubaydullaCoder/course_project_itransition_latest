@@ -9,11 +9,9 @@ import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Grip, Trash2 } from 'lucide-react';
 import {
-  QUESTION_TYPES,
   QUESTION_TYPE_LABELS,
 } from '@/lib/constants/questions';
-import { useFormContext } from 'react-hook-form';
-import { FormControl, FormField, FormItem, FormMessage } from '../ui/form';
+import { FormControl, FormItem, FormMessage } from '../ui/form';
 
 export function SortableQuestionForm({
   id,
