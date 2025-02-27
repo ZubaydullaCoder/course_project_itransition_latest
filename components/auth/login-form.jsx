@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { LoginSchema } from '@/lib/utils/validators';
+import { Mail, Lock, LogIn } from 'lucide-react'; // Import icons
 import {
   Form,
   FormControl,
@@ -19,7 +19,6 @@ import {
 } from '@/components/ui/form';
 
 export function LoginForm() {
-  
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -75,12 +74,16 @@ export function LoginForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  type="email"
-                  placeholder="name@example.com"
-                  disabled={isLoading}
-                />
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    {...field}
+                    type="email"
+                    placeholder="name@example.com"
+                    disabled={isLoading}
+                    className="pl-10"
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -93,19 +96,30 @@ export function LoginForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  type="password"
-                  placeholder="••••••••"
-                  disabled={isLoading}
-                />
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    {...field}
+                    type="password"
+                    placeholder="••••••••"
+                    disabled={isLoading}
+                    className="pl-10"
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? 'Loading...' : 'Sign In'}
+          {isLoading ? (
+            'Loading...'
+          ) : (
+            <>
+              <LogIn className="mr-2 h-4 w-4" />
+              Sign In
+            </>
+          )}
         </Button>
       </form>
     </Form>

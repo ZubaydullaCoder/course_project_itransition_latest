@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { registerUser } from '@/lib/actions/auth';
 import { RegisterSchema } from '@/lib/utils/validators';
+import { User, Mail, Lock, UserPlus } from 'lucide-react'; // Import icons
 import {
   Form,
   FormControl,
@@ -73,12 +74,16 @@ export function RegisterForm() {
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  type="text"
-                  placeholder="John Doe"
-                  disabled={isLoading}
-                />
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    {...field}
+                    type="text"
+                    placeholder="John Doe"
+                    disabled={isLoading}
+                    className="pl-10"
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -91,12 +96,16 @@ export function RegisterForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  type="email"
-                  placeholder="name@example.com"
-                  disabled={isLoading}
-                />
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    {...field}
+                    type="email"
+                    placeholder="name@example.com"
+                    disabled={isLoading}
+                    className="pl-10"
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -109,19 +118,30 @@ export function RegisterForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  type="password"
-                  placeholder="••••••••"
-                  disabled={isLoading}
-                />
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    {...field}
+                    type="password"
+                    placeholder="••••••••"
+                    disabled={isLoading}
+                    className="pl-10"
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? 'Loading...' : 'Create Account'}
+          {isLoading ? (
+            'Loading...'
+          ) : (
+            <>
+              <UserPlus className="mr-2 h-4 w-4" />
+              Create Account
+            </>
+          )}
         </Button>
       </form>
     </Form>
