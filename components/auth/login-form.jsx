@@ -2,13 +2,14 @@
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation'; // Import router
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { LoginSchema } from '@/lib/utils/validators';
-import { Mail, Lock, LogIn, Eye, EyeOff } from 'lucide-react'; // Added Eye icons
+import { Mail, Lock, LogIn, Eye, EyeOff } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -19,6 +20,7 @@ import {
 } from '@/components/ui/form';
 
 export function LoginForm() {
+  const router = useRouter(); // Add router
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -35,32 +37,46 @@ export function LoginForm() {
     setIsLoading(true);
 
     try {
+      // Use redirect: false to handle errors
       const result = await signIn('credentials', {
         ...data,
-        redirect: true,
-        callbackUrl: '/',
+        redirect: false,
       });
 
       if (result?.error) {
-        toast({
-          variant: 'destructive',
-          title: 'Login Failed',
-          description: 'Invalid email or password',
-        });
+        // Handle different error cases
+        if (result.error === 'Configuration') {
+          console.log({ result });
+          toast({
+            variant: 'destructive',
+            title: 'Login Failed',
+            description: 'Invalid email or password',
+          });
+        } else {
+          toast({
+            variant: 'destructive',
+            title: 'Login Failed',
+            description: result.error || 'Authentication failed',
+          });
+        }
+        setIsLoading(false);
         return;
       }
 
+      // Success case
       toast({
         title: 'Welcome back!',
         description: 'You have successfully logged in.',
       });
+
+      // Manually redirect on success
+      router.push('/');
     } catch (error) {
       toast({
         variant: 'destructive',
         title: 'Login Failed',
         description: 'Unable to sign in at the moment. Please try again later.',
       });
-    } finally {
       setIsLoading(false);
     }
   }

@@ -56,11 +56,15 @@ export const {
             email: true,
             password: true,
             role: true,
+            isActive: true,
           },
         });
 
         if (!user) throw new Error('Email does not exist');
-
+        if (user.isActive === false)
+          throw new Error(
+            'Account is blocked. Please contact an administrator.'
+          );
         const passwordsMatch = await bcrypt.compare(password, user.password);
 
         if (!passwordsMatch) throw new Error('Incorrect password');
