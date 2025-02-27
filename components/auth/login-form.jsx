@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { LoginSchema } from '@/lib/utils/validators';
-import { Mail, Lock, LogIn } from 'lucide-react'; // Import icons
+import { Mail, Lock, LogIn, Eye, EyeOff } from 'lucide-react'; // Added Eye icons
 import {
   Form,
   FormControl,
@@ -21,6 +21,7 @@ import {
 export function LoginForm() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(LoginSchema),
@@ -100,11 +101,19 @@ export function LoginForm() {
                   <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     {...field}
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     disabled={isLoading}
-                    className="pl-10"
+                    className="pl-10 pr-10"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                    tabIndex="-1"
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
                 </div>
               </FormControl>
               <FormMessage />

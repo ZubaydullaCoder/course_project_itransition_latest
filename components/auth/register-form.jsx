@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { registerUser } from '@/lib/actions/auth';
 import { RegisterSchema } from '@/lib/utils/validators';
-import { User, Mail, Lock, UserPlus } from 'lucide-react'; // Import icons
+import { User, Mail, Lock, UserPlus, Eye, EyeOff } from 'lucide-react'; // Added Eye icons
 import {
   Form,
   FormControl,
@@ -23,6 +23,7 @@ export function RegisterForm() {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(RegisterSchema),
@@ -122,11 +123,19 @@ export function RegisterForm() {
                   <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     {...field}
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     disabled={isLoading}
-                    className="pl-10"
+                    className="pl-10 pr-10"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                    tabIndex="-1"
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
                 </div>
               </FormControl>
               <FormMessage />
