@@ -11,12 +11,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -30,7 +24,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, Edit, MoreVertical, Trash2 } from 'lucide-react';
+import {
+  Eye,
+  Edit,
+  Trash2,
+  ArrowUpDown,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
 import Link from 'next/link';
 import { formatDate } from '@/lib/utils';
 
@@ -40,6 +41,10 @@ export function UserResponsesTable() {
   const { toast } = useToast();
   const [responseToDelete, setResponseToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [sorting, setSorting] = useState({
+    column: 'createdAt',
+    direction: 'desc',
+  });
 
   useEffect(() => {
     async function loadResponses() {
@@ -103,6 +108,49 @@ export function UserResponsesTable() {
     }
   }
 
+  // Handle sorting
+  const handleSort = (column) => {
+    setSorting((prev) => ({
+      column,
+      direction:
+        prev.column === column && prev.direction === 'asc' ? 'desc' : 'asc',
+    }));
+  };
+
+  // Sort responses
+  const sortedResponses = [...responses].sort((a, b) => {
+    const { column, direction } = sorting;
+
+    // Special handling for template title
+    if (column === 'title') {
+      const titleA = a.template?.title || '';
+      const titleB = b.template?.title || '';
+      return direction === 'asc'
+        ? titleA.localeCompare(titleB)
+        : titleB.localeCompare(titleA);
+    }
+
+    // For dates
+    if (column === 'createdAt' || column === 'updatedAt') {
+      const dateA = new Date(a[column]);
+      const dateB = new Date(b[column]);
+      return direction === 'asc' ? dateA - dateB : dateB - dateA;
+    }
+
+    return 0;
+  });
+
+  // Helper for sort indicator
+  const getSortIcon = (column) => {
+    if (sorting.column !== column)
+      return <ArrowUpDown className="h-4 w-4 ml-1" />;
+    return sorting.direction === 'asc' ? (
+      <ChevronUp className="h-4 w-4 ml-1" />
+    ) : (
+      <ChevronDown className="h-4 w-4 ml-1" />
+    );
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -144,6 +192,7 @@ export function UserResponsesTable() {
                       <div className="flex justify-end gap-2">
                         <Skeleton className="h-8 w-8" />
                         <Skeleton className="h-8 w-8" />
+                        <Skeleton className="h-8 w-8" />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -160,18 +209,38 @@ export function UserResponsesTable() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Form</TableHead>
-                  <TableHead className="hidden md:table-cell">
-                    Submitted
+                  <TableHead
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => handleSort('title')}
+                  >
+                    <div className="flex items-center">
+                      Form
+                      {getSortIcon('title')}
+                    </div>
                   </TableHead>
-                  <TableHead className="hidden md:table-cell">
-                    Last Updated
+                  <TableHead
+                    className="hidden md:table-cell cursor-pointer hover:bg-muted/50"
+                    onClick={() => handleSort('createdAt')}
+                  >
+                    <div className="flex items-center">
+                      Submitted
+                      {getSortIcon('createdAt')}
+                    </div>
+                  </TableHead>
+                  <TableHead
+                    className="hidden md:table-cell cursor-pointer hover:bg-muted/50"
+                    onClick={() => handleSort('updatedAt')}
+                  >
+                    <div className="flex items-center">
+                      Last Updated
+                      {getSortIcon('updatedAt')}
+                    </div>
                   </TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {responses.map((response) => (
+                {sortedResponses.map((response) => (
                   <TableRow key={response.id}>
                     <TableCell className="font-medium">
                       {response.template?.title || 'Unknown Template'}
@@ -183,39 +252,29 @@ export function UserResponsesTable() {
                       {formatDate(response.updatedAt)}
                     </TableCell>
                     <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreVertical className="h-4 w-4" />
-                            <span className="sr-only">Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem asChild>
-                            <Link
-                              href={`/templates/${response.templateId}/responses/${response.id}`}
-                            >
-                              <Eye className="h-4 w-4 mr-2" />
-                              View Response
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem asChild>
-                            <Link
-                              href={`/templates/${response.templateId}?tab=myResponse`}
-                            >
-                              <Edit className="h-4 w-4 mr-2" />
-                              Edit Response
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => setResponseToDelete(response)}
-                            className="text-destructive"
+                      <div className="flex justify-end gap-2">
+                        <Button variant="ghost" size="icon" asChild>
+                          <Link
+                            href={`/templates/${response.templateId}/responses/${response.id}`}
                           >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete Response
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                            <Eye className="h-4 w-4" />
+                          </Link>
+                        </Button>
+                        <Button variant="ghost" size="icon" asChild>
+                          <Link
+                            href={`/templates/${response.templateId}?tab=myResponse`}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Link>
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setResponseToDelete(response)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

@@ -15,7 +15,15 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
-import { Edit, Eye, Plus, Trash } from 'lucide-react';
+import {
+  Edit,
+  Eye,
+  Plus,
+  Trash,
+  ArrowUpDown,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { DeleteTemplateDialog } from '@/components/templates/common/delete-template-dialog';
@@ -25,6 +33,10 @@ export function UserTemplatesTable() {
   const [isLoading, setIsLoading] = useState(true);
   const [templateToDelete, setTemplateToDelete] = useState(null);
   const { toast } = useToast();
+  const [sorting, setSorting] = useState({
+    column: 'createdAt',
+    direction: 'desc',
+  });
 
   useEffect(() => {
     async function loadTemplates() {
@@ -60,6 +72,63 @@ export function UserTemplatesTable() {
       title: 'Template deleted',
       description: 'The template has been successfully deleted',
     });
+  };
+
+  // Handle sorting
+  const handleSort = (column) => {
+    setSorting((prev) => ({
+      column,
+      direction:
+        prev.column === column && prev.direction === 'asc' ? 'desc' : 'asc',
+    }));
+  };
+
+  // Sort templates
+  const sortedTemplates = [...templates].sort((a, b) => {
+    const { column, direction } = sorting;
+
+    // For title sorting
+    if (column === 'title') {
+      return direction === 'asc'
+        ? a.title.localeCompare(b.title)
+        : b.title.localeCompare(a.title);
+    }
+
+    // For status sorting
+    if (column === 'status') {
+      const statusA = a.isPublic ? 'Public' : 'Private';
+      const statusB = b.isPublic ? 'Public' : 'Private';
+      return direction === 'asc'
+        ? statusA.localeCompare(statusB)
+        : statusB.localeCompare(statusA);
+    }
+
+    // For created date
+    if (column === 'createdAt') {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return direction === 'asc' ? dateA - dateB : dateB - dateA;
+    }
+
+    // For responses count
+    if (column === 'responses') {
+      const countA = a._count?.responses || 0;
+      const countB = b._count?.responses || 0;
+      return direction === 'asc' ? countA - countB : countB - countA;
+    }
+
+    return 0;
+  });
+
+  // Helper for sort indicator
+  const getSortIcon = (column) => {
+    if (sorting.column !== column)
+      return <ArrowUpDown className="h-4 w-4 ml-1" />;
+    return sorting.direction === 'asc' ? (
+      <ChevronUp className="h-4 w-4 ml-1" />
+    ) : (
+      <ChevronDown className="h-4 w-4 ml-1" />
+    );
   };
 
   return (
@@ -140,15 +209,47 @@ export function UserTemplatesTable() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Responses</TableHead>
+                  <TableHead
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => handleSort('title')}
+                  >
+                    <div className="flex items-center">
+                      Title
+                      {getSortIcon('title')}
+                    </div>
+                  </TableHead>
+                  <TableHead
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => handleSort('status')}
+                  >
+                    <div className="flex items-center">
+                      Status
+                      {getSortIcon('status')}
+                    </div>
+                  </TableHead>
+                  <TableHead
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => handleSort('createdAt')}
+                  >
+                    <div className="flex items-center">
+                      Created
+                      {getSortIcon('createdAt')}
+                    </div>
+                  </TableHead>
+                  <TableHead
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => handleSort('responses')}
+                  >
+                    <div className="flex items-center">
+                      Responses
+                      {getSortIcon('responses')}
+                    </div>
+                  </TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {templates.map((template) => (
+                {sortedTemplates.map((template) => (
                   <TableRow key={template.id}>
                     <TableCell className="font-medium">
                       {template.title}

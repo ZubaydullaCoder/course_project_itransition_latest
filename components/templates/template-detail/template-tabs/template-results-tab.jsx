@@ -13,18 +13,19 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { BarChart, List, RotateCw, Trash2, MoreHorizontal } from 'lucide-react';
+import {
+  RotateCw,
+  ArrowUpDown,
+  ChevronDown,
+  ChevronUp,
+  Eye,
+  Trash2,
+} from 'lucide-react';
 import { getTemplateResponses } from '@/lib/actions/template-actions';
 import { formatDate } from '@/lib/utils';
-import Link from 'next/link';
+
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+
 import { ResponseDetailsModal } from './response-details-modal';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -37,12 +38,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+
 import { deleteResponse } from '@/lib/actions/form-actions';
 
 export function TemplateResultsTab({ templateId }) {
@@ -50,13 +46,17 @@ export function TemplateResultsTab({ templateId }) {
   const [responses, setResponses] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sortBy, setSortBy] = useState('newest');
   const [aggregatedData, setAggregatedData] = useState({});
   const [selectedResponseId, setSelectedResponseId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // Add states for delete functionality
   const [responseToDelete, setResponseToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Add sorting state
+  const [sorting, setSorting] = useState({
+    column: 'createdAt',
+    direction: 'desc',
+  });
 
   useEffect(() => {
     async function fetchResponses() {
@@ -163,15 +163,56 @@ export function TemplateResultsTab({ templateId }) {
     setAggregatedData(aggregated);
   }
 
+  // Handle sorting
+  const handleSort = (column) => {
+    setSorting((prev) => ({
+      column,
+      direction:
+        prev.column === column && prev.direction === 'asc' ? 'desc' : 'asc',
+    }));
+  };
+
+  // Helper for sort indicator
+  const getSortIcon = (column) => {
+    if (sorting.column !== column)
+      return <ArrowUpDown className="h-4 w-4 ml-1" />;
+    return sorting.direction === 'asc' ? (
+      <ChevronUp className="h-4 w-4 ml-1" />
+    ) : (
+      <ChevronDown className="h-4 w-4 ml-1" />
+    );
+  };
+
+  // Sort responses
   const sortedResponses = [...responses].sort((a, b) => {
-    switch (sortBy) {
-      case 'oldest':
-        return new Date(a.createdAt) - new Date(b.createdAt);
-      case 'user':
-        return a.user?.name.localeCompare(b.user?.name || '');
-      default: // newest
-        return new Date(b.createdAt) - new Date(a.createdAt);
+    const { column, direction } = sorting;
+
+    // For user name sorting
+    if (column === 'user') {
+      const nameA = a.user?.name || '';
+      const nameB = b.user?.name || '';
+      return direction === 'asc'
+        ? nameA.localeCompare(nameB)
+        : nameB.localeCompare(nameA);
     }
+
+    // For dates
+    if (column === 'createdAt' || column === 'updatedAt') {
+      const dateA = new Date(a[column]);
+      const dateB = new Date(b[column]);
+      return direction === 'asc' ? dateA - dateB : dateB - dateA;
+    }
+
+    // For status
+    if (column === 'status') {
+      const statusA = a.updatedAt !== a.createdAt ? 'Updated' : 'Submitted';
+      const statusB = b.updatedAt !== b.createdAt ? 'Updated' : 'Submitted';
+      return direction === 'asc'
+        ? statusA.localeCompare(statusB)
+        : statusB.localeCompare(statusA);
+    }
+
+    return 0;
   });
 
   // Handle refresh
@@ -245,26 +286,14 @@ export function TemplateResultsTab({ templateId }) {
             <CardTitle className="text-lg font-medium">
               Form Responses
             </CardTitle>
-            <div className="flex items-center gap-2">
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="newest">Newest First</SelectItem>
-                  <SelectItem value="oldest">Oldest First</SelectItem>
-                  <SelectItem value="user">By User</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleRefresh}
-                disabled={isLoading}
-              >
-                <RotateCw className="h-4 w-4" />
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleRefresh}
+              disabled={isLoading}
+            >
+              <RotateCw className="h-4 w-4" />
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -281,63 +310,84 @@ export function TemplateResultsTab({ templateId }) {
               <p>No responses yet</p>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>User</TableHead>
-                  <TableHead>Submitted Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sortedResponses.map((response) => (
-                  <TableRow key={response.id}>
-                    <TableCell className="font-medium">
-                      {response.user?.name || 'Unknown User'}
-                    </TableCell>
-                    <TableCell>{formatDate(response.createdAt)}</TableCell>
-                    <TableCell>
-                      {response.updatedAt !== response.createdAt ? (
-                        <Badge variant="outline">Updated</Badge>
-                      ) : (
-                        <Badge variant="secondary">Submitted</Badge>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleSort('user')}
+                    >
+                      <div className="flex items-center">
+                        User
+                        {getSortIcon('user')}
+                      </div>
+                    </TableHead>
+                    <TableHead
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleSort('createdAt')}
+                    >
+                      <div className="flex items-center">
+                        Submitted Date
+                        {getSortIcon('createdAt')}
+                      </div>
+                    </TableHead>
+                    <TableHead
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleSort('status')}
+                    >
+                      <div className="flex items-center">
+                        Status
+                        {getSortIcon('status')}
+                      </div>
+                    </TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {sortedResponses.map((response) => (
+                    <TableRow key={response.id}>
+                      <TableCell className="font-medium">
+                        {response.user?.name || 'Unknown User'}
+                      </TableCell>
+                      <TableCell>{formatDate(response.createdAt)}</TableCell>
+                      <TableCell>
+                        {response.updatedAt !== response.createdAt ? (
+                          <Badge variant="outline">Updated</Badge>
+                        ) : (
+                          <Badge variant="secondary">Submitted</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => handleViewResponse(response.id)}
                           >
-                            View details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="text-destructive"
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setResponseToDelete(response)}
                           >
-                            Delete response
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
         </CardContent>
       </Card>
 
       <Separator />
 
-      {}
+      {/* Aggregation Card - No changes needed */}
       <Card>
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
@@ -351,6 +401,7 @@ export function TemplateResultsTab({ templateId }) {
           </div>
         </CardHeader>
         <CardContent>
+          {/* Rest of aggregation content remains unchanged */}
           {isLoading ? (
             <div className="space-y-2">
               <Skeleton className="h-10 w-full" />
@@ -374,6 +425,8 @@ export function TemplateResultsTab({ templateId }) {
                     </div>
                   </CardHeader>
                   <CardContent>
+                    {/* Content for each question type remains unchanged */}
+                    {/* NUMBER type */}
                     {item.type === 'NUMBER' && (
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div className="p-4 rounded-lg bg-muted flex flex-col items-center justify-center">
@@ -401,6 +454,7 @@ export function TemplateResultsTab({ templateId }) {
                       </div>
                     )}
 
+                    {/* TEXT or TEXTAREA type */}
                     {(item.type === 'TEXT' || item.type === 'TEXTAREA') && (
                       <div className="bg-muted p-4 rounded-lg">
                         <p className="text-sm text-muted-foreground">
@@ -445,6 +499,7 @@ export function TemplateResultsTab({ templateId }) {
                       </div>
                     )}
 
+                    {/* CHECKBOX type */}
                     {item.type === 'CHECKBOX' && (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="bg-muted p-4 rounded-lg">
@@ -500,6 +555,7 @@ export function TemplateResultsTab({ templateId }) {
         </CardContent>
       </Card>
 
+      {/* Response Details Modal */}
       <ResponseDetailsModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -507,7 +563,7 @@ export function TemplateResultsTab({ templateId }) {
         templateId={templateId}
       />
 
-      {/* Add the AlertDialog for delete confirmation */}
+      {/* Delete confirmation dialog */}
       <AlertDialog
         open={!!responseToDelete}
         onOpenChange={(open) => !open && setResponseToDelete(null)}
