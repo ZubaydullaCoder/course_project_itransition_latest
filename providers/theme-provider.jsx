@@ -7,11 +7,9 @@ export function ThemeProvider({ children }) {
   const { theme, setTheme } = useThemeStore();
   const [mounted, setMounted] = useState(false);
 
-  // Handle mounting - prevents hydration mismatch
   useEffect(() => {
     setMounted(true);
 
-    // Check if stored theme exists and is valid
     try {
       const storedTheme = localStorage.getItem('theme-storage');
       if (storedTheme) {
