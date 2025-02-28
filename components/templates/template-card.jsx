@@ -117,7 +117,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
         router.push(`/templates/${template.id}`);
       }}
     >
-      <div className="relative w-full h-[180px]">
+      <div className="relative w-full h-[170px]">
         {template.image ? (
           <Image
             src={template.image}
@@ -129,10 +129,10 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
           />
         ) : (
           <Image
-            src="/images/5272.jpg"
+            src="/images/2155223.jpg"
             alt={template.title}
             fill
-            className="object-cover rounded-t-lg"
+            className="object-cover h-full rounded-t-lg"
             sizes="(min-width: 1024px) 20vw, (min-width: 768px) 30vw, 90vw"
             priority={false}
           />
