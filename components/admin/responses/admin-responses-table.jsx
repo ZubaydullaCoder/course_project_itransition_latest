@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -111,18 +110,20 @@ export function AdminResponsesTable({ initialResponses }) {
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem
                         onClick={() =>
+                          // Navigate to overview tab
                           router.push(
-                            `/templates/${response.templateId}/responses/${response.id}`
+                            `/templates/${response.templateId}?tab=overview`
                           )
                         }
                       >
                         <Eye className="h-4 w-4 mr-2" />
-                        View Details
+                        View Template
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() =>
+                          // Navigate to myResponse tab
                           router.push(
-                            `/forms/${response.templateId}?responseId=${response.id}`
+                            `/templates/${response.templateId}?tab=myResponse&responseId=${response.id}`
                           )
                         }
                       >
