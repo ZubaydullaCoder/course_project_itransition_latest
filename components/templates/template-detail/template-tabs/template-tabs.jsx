@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -6,24 +5,20 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { TemplateOverviewTab } from './template-overview-tab';
 import { Card } from '@/components/ui/card';
-import { TemplateResultsTab } from './template-results-tab';
+import { TemplateResultsTab } from './results-components/template-results-tab';
 import { ViewEditResponse } from './view-edit-response';
 
 export function TemplateTabs({ template, session, userResponse, templateId }) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  
   const isOwner = template.author.id === session?.user?.id;
   const isAdmin = session?.user?.role === 'ADMIN';
   const canEdit = isOwner || isAdmin;
 
-  
   const tabParam = searchParams.get('tab');
 
-  
   const [activeTab, setActiveTab] = useState(() => {
-    
     if (tabParam === 'results' && (isOwner || isAdmin)) {
       return 'results';
     } else if (tabParam === 'myResponse') {
@@ -32,10 +27,9 @@ export function TemplateTabs({ template, session, userResponse, templateId }) {
     return 'overview';
   });
 
-  
   const handleTabChange = (value) => {
     setActiveTab(value);
-    
+
     const params = new URLSearchParams(searchParams);
     params.set('tab', value);
     router.push(`/templates/${templateId}?${params.toString()}`, {
@@ -43,7 +37,6 @@ export function TemplateTabs({ template, session, userResponse, templateId }) {
     });
   };
 
-  
   if (!canEdit) {
     return (
       <Tabs
@@ -77,7 +70,6 @@ export function TemplateTabs({ template, session, userResponse, templateId }) {
     );
   }
 
-  
   return (
     <Tabs
       defaultValue="overview"

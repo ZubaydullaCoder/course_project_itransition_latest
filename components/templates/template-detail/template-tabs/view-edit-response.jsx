@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -17,19 +16,17 @@ import { Separator } from '@/components/ui/separator';
 export function ViewEditResponse({ template, response }) {
   const router = useRouter();
   const { toast } = useToast();
-  
+
   const [isEditMode, setIsEditMode] = useState(!response);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [originalValues, setOriginalValues] = useState({});
   const [hasChanges, setHasChanges] = useState(false);
   const validationSchema = createFormResponseSchema(template.questions);
 
-  
   const form = useForm({
     resolver: zodResolver(validationSchema),
     defaultValues: template.questions.reduce((acc, question) => {
       if (response?.answers) {
-        
         const answer = response.answers.find(
           (a) => a.questionId === question.id
         );
@@ -46,12 +43,9 @@ export function ViewEditResponse({ template, response }) {
     mode: 'onSubmit',
   });
 
-  
   const formValues = form.watch();
 
-  
   useEffect(() => {
-    
     if (response?.answers) {
       const values = template.questions.reduce((acc, question) => {
         const answer = response.answers.find(
@@ -74,7 +68,6 @@ export function ViewEditResponse({ template, response }) {
 
       setOriginalValues(normalizedValues);
     } else {
-      
       const emptyValues = template.questions.reduce((acc, question) => {
         acc[question.id] =
           question.type === QUESTION_TYPES.CHECKBOX ? 'false' : '';
@@ -125,6 +118,7 @@ export function ViewEditResponse({ template, response }) {
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
+
     try {
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => {
@@ -148,7 +142,7 @@ export function ViewEditResponse({ template, response }) {
       });
 
       setIsEditMode(false);
-      router.refresh(); 
+      router.refresh();
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -159,6 +153,9 @@ export function ViewEditResponse({ template, response }) {
       setIsSubmitting(false);
     }
   };
+
+  // Determine if inputs should be disabled
+  const areInputsDisabled = !isEditMode || isSubmitting;
 
   return (
     <div className="space-y-6">
@@ -188,7 +185,7 @@ export function ViewEditResponse({ template, response }) {
               <FormQuestion
                 question={question}
                 control={form.control}
-                disabled={!isEditMode}
+                disabled={areInputsDisabled}
               />
             </div>
           ))}
@@ -209,15 +206,11 @@ export function ViewEditResponse({ template, response }) {
                   </Button>
                 )}
                 <Button type="submit" disabled={isSubmitting || !hasChanges}>
-                  {isSubmitting
-                    ? response
-                      ? 'Saving...'
-                      : 'Submitting...'
-                    : !hasChanges
-                      ? 'No Changes'
-                      : response
-                        ? 'Save Changes'
-                        : 'Submit'}
+                  {!hasChanges
+                    ? 'No Changes'
+                    : response
+                      ? 'Save Changes'
+                      : 'Submit'}
                 </Button>
               </div>
             </>

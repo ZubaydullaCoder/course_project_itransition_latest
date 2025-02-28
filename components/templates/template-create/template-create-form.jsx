@@ -52,7 +52,7 @@ export function TemplateCreateForm() {
       description: '',
       topic: '',
       tags: '',
-      isPublic: false,
+      isPublic: true,
       allowedUsers: '',
       questions: [],
       image: '',
