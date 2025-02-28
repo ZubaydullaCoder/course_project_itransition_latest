@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation'; // Import router
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -24,7 +24,7 @@ export function LoginForm() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
+  const { update } = useSession();
   const form = useForm({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -62,13 +62,14 @@ export function LoginForm() {
         setIsLoading(false);
         return;
       }
-
+      await update();
       // Success case
       toast({
         title: 'Welcome back!',
         description: 'You have successfully logged in.',
       });
 
+      // await new Promise((resolve) => setTimeout(resolve, 500));
       // Manually redirect on success
       router.push('/');
     } catch (error) {
