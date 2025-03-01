@@ -29,7 +29,12 @@ export default auth((req) => {
   // Protect template routes
   if (req.nextUrl.pathname.startsWith('/templates')) {
     if (!isLoggedIn) {
-      return NextResponse.redirect(new URL('/login', req.nextUrl));
+      return NextResponse.redirect(
+        new URL(
+          `/login?returnTo=${req.nextUrl.pathname}${req.nextUrl.search}`,
+          req.nextUrl
+        )
+      );
     }
   }
 

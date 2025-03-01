@@ -80,14 +80,20 @@ export function MainNav() {
   );
 
   const handleSignOut = async () => {
-    // Store the current path in localStorage before signing out
+    // Store the current path with user ID as part of the key
     const currentPath = window.location.pathname + window.location.search;
     if (
       currentPath !== '/' &&
       currentPath !== '/login' &&
       currentPath !== '/register'
     ) {
-      localStorage.setItem('returnPath', currentPath);
+      // Store both the user's email and the path
+      if (user?.email) {
+        localStorage.setItem(
+          `returnPath_${encodeURIComponent(user.email)}`,
+          currentPath
+        );
+      }
     }
     await signOut({
       redirect: true,

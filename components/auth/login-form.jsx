@@ -35,19 +35,8 @@ export function LoginForm() {
     },
   });
 
-  // Get returnTo path from query params or localStorage
+  // Get returnTo path from query params
   const queryReturnTo = searchParams.get('returnTo');
-  const [returnTo, setReturnTo] = useState('');
-
-  // Check localStorage on component mount
-  useEffect(() => {
-    const storedPath = localStorage.getItem('returnPath');
-    if (storedPath) {
-      setReturnTo(storedPath);
-    } else if (queryReturnTo) {
-      setReturnTo(queryReturnTo);
-    }
-  }, [queryReturnTo]);
 
   // Validate the return URL is safe (internal link)
   const isValidReturnUrl = (url) => {
@@ -90,13 +79,25 @@ export function LoginForm() {
         description: 'You have successfully logged in.',
       });
       await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Look for a user-specific return path using the email from the form
+      const userSpecificPath = localStorage.getItem(
+        `returnPath_${encodeURIComponent(data.email)}`
+      );
+      // Prioritize paths: user-specific path > query param > default
+      const redirectUrl =
+        queryReturnTo && isValidReturnUrl(queryReturnTo)
+          ? queryReturnTo
+          : userSpecificPath && isValidReturnUrl(userSpecificPath)
+            ? userSpecificPath
+            : '/';
+
+      // Clear user-specific path after use
+      if (userSpecificPath) {
+        localStorage.removeItem(`returnPath_${encodeURIComponent(data.email)}`);
+      }
+
       router.refresh();
-      // Direct to the saved URL if valid, otherwise go to home
-      const redirectUrl = isValidReturnUrl(returnTo) ? returnTo : '/';
-
-      // Clear saved path after use
-      localStorage.removeItem('returnPath');
-
       router.push(redirectUrl);
     } catch (error) {
       toast({
