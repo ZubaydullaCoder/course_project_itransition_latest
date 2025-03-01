@@ -68,7 +68,7 @@ export function LoginForm() {
         title: 'Welcome back!',
         description: 'You have successfully logged in.',
       });
-
+      await new Promise((resolve) => setTimeout(resolve, 700));
       // await new Promise((resolve) => setTimeout(resolve, 500));
       // Manually redirect on success
       router.push('/');
