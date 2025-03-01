@@ -71,6 +71,7 @@ export function LoginForm() {
       await new Promise((resolve) => setTimeout(resolve, 700));
       // await new Promise((resolve) => setTimeout(resolve, 500));
       // Manually redirect on success
+      router.refresh();
       router.push('/');
     } catch (error) {
       toast({
