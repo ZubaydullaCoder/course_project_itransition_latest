@@ -1,0 +1,1 @@
+- Always try to leverage popular, ready packages and its apis as possible, instead of creating manually from scartch during development to work efficiently. No need to reinvent the wheel.

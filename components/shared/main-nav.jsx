@@ -80,9 +80,18 @@ export function MainNav() {
   );
 
   const handleSignOut = async () => {
+    // Store the current path in localStorage before signing out
+    const currentPath = window.location.pathname + window.location.search;
+    if (
+      currentPath !== '/' &&
+      currentPath !== '/login' &&
+      currentPath !== '/register'
+    ) {
+      localStorage.setItem('returnPath', currentPath);
+    }
     await signOut({
       redirect: true,
-      callbackUrl: '/',
+      callbackUrl: `/`,
     });
   };
 

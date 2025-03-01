@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { signIn, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation'; // Import router
+import { useRouter, useSearchParams } from 'next/navigation'; // Import router
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -20,7 +20,9 @@ import {
 } from '@/components/ui/form';
 
 export function LoginForm() {
-  const router = useRouter(); // Add router
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -32,6 +34,25 @@ export function LoginForm() {
       password: '',
     },
   });
+
+  // Get returnTo path from query params or localStorage
+  const queryReturnTo = searchParams.get('returnTo');
+  const [returnTo, setReturnTo] = useState('');
+
+  // Check localStorage on component mount
+  useEffect(() => {
+    const storedPath = localStorage.getItem('returnPath');
+    if (storedPath) {
+      setReturnTo(storedPath);
+    } else if (queryReturnTo) {
+      setReturnTo(queryReturnTo);
+    }
+  }, [queryReturnTo]);
+
+  // Validate the return URL is safe (internal link)
+  const isValidReturnUrl = (url) => {
+    return url && url.startsWith('/') && !url.startsWith('//');
+  };
 
   async function onSubmit(data) {
     setIsLoading(true);
@@ -68,11 +89,15 @@ export function LoginForm() {
         title: 'Welcome back!',
         description: 'You have successfully logged in.',
       });
-      await new Promise((resolve) => setTimeout(resolve, 700));
-      // await new Promise((resolve) => setTimeout(resolve, 500));
-      // Manually redirect on success
+      await new Promise((resolve) => setTimeout(resolve, 500));
       router.refresh();
-      router.push('/');
+      // Direct to the saved URL if valid, otherwise go to home
+      const redirectUrl = isValidReturnUrl(returnTo) ? returnTo : '/';
+
+      // Clear saved path after use
+      localStorage.removeItem('returnPath');
+
+      router.push(redirectUrl);
     } catch (error) {
       toast({
         variant: 'destructive',
