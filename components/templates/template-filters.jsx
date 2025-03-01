@@ -24,9 +24,8 @@ export function TemplateFilters({
   // Use the custom hooks for each filter type
   const filter = useOptimisticFilter(currentFilter, 'filter');
   const topic = useOptimisticFilter(currentTopic, 'topic');
-  // Add preventToggle option for sort filters to prevent toggling off
   const sort = useOptimisticFilter(currentSort, 'sort', {
-    preventToggle: true,
+    preventToggle: true, // Sort should always have a value
   });
   const status = useOptimisticFilter(currentStatus, 'status');
 

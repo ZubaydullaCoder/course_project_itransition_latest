@@ -1,48 +1,23 @@
-// hooks/use-optimistic-filter.js
+// hooks/use-optimistic-filter.jsx
 'use client';
 
-import { useOptimistic, useTransition } from 'react';
-import { useQueryParams } from '@/hooks/use-query-params';
+import { useOptimisticUI } from '@/hooks/use-optimistic-ui';
 
 /**
- * Hook for managing filter state with optimistic UI updates
+ * Specialized hook for filter UI with optimistic updates
  * @param {string} initialValue - Initial filter value
- * @param {string} paramName - URL parameter name
+ * @param {string} paramName - URL parameter name for this filter
  * @param {Object} options - Additional options
  * @returns {Object} Filter state and handlers
  */
 export function useOptimisticFilter(initialValue, paramName, options = {}) {
-  const { baseUrl = '/templates', preventToggle = false } = options;
-  const { setParams } = useQueryParams({ baseUrl });
-  const [_, startTransition] = useTransition();
-
-  const [optimisticValue, setOptimisticValue] = useOptimistic(
-    initialValue,
-    (state, newValue) => newValue
-  );
-
-  const handleChange = (value) => {
-    // If this is already the active value and preventToggle is true,
-    // do nothing (this prevents toggling off sort filters)
-    if (value === optimisticValue && preventToggle) {
-      return optimisticValue;
-    }
-
-    // Toggle behavior: if current value is selected again, clear it
-    const newValue = value === optimisticValue ? null : value;
-
-    startTransition(() => {
-      setOptimisticValue(newValue);
-      setParams({ [paramName]: newValue });
-    });
-
-    return newValue;
-  };
+  const filter = useOptimisticUI(initialValue, paramName, options);
 
   return {
-    value: optimisticValue,
-    setValue: setOptimisticValue,
-    handleChange,
-    isActive: !!optimisticValue,
+    value: filter.value,
+    handleChange: filter.handleChange,
+    isActive: filter.isActive,
+    isPending: filter.isPending,
+    reset: () => filter.handleChange(undefined),
   };
 }

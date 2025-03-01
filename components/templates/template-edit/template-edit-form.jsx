@@ -34,15 +34,23 @@ import { TemplateSchema } from '@/lib/utils/validators';
 import { updateTemplate } from '@/lib/actions/template-actions';
 import { UserSelect } from '@/components/templates/common/inputs/user-select';
 import { ImageUpload } from '@/components/ui/image-upload';
+import { useFormSubmission } from '@/hooks/use-form-submission';
 
 export function TemplateEditForm({ template }) {
   const router = useRouter();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [questions, setQuestions] = useState(template.questions || []);
   const [hasChanges, setHasChanges] = useState(false);
 
+  // Use the custom form submission hook
+  const { isSubmitting, handleSubmit } = useFormSubmission({
+    successMessage: 'Template updated successfully',
+    shouldNavigateBack: true,
+    shouldRefreshPage: true,
+  });
+
+  // Rest of the component setup (original code)
   const originalQuestions = useMemo(
     () => JSON.stringify(template.questions || []),
     [template.questions]
@@ -71,7 +79,7 @@ export function TemplateEditForm({ template }) {
   // Watch for changes in form values
   const formValues = form.watch();
 
-  // Check for changes when form values or questions change
+  // Keep the effect for checking changes
   useEffect(() => {
     // Helper function to normalize strings for comparison (trim whitespace)
     const normalizeString = (value) =>
@@ -125,7 +133,7 @@ export function TemplateEditForm({ template }) {
   }, [formValues, questions, originalFormValues, originalQuestions]);
 
   async function onSubmit(data) {
-    // Identify questions with empty titles
+    // Validate questions first
     const emptyTitleQuestions = questions.filter((q) => !q.text?.trim());
 
     if (emptyTitleQuestions.length > 0) {
@@ -159,45 +167,22 @@ export function TemplateEditForm({ template }) {
       return;
     }
 
-    setIsLoading(true);
+    // Create submission function
+    const submitTemplate = async (formData) => {
+      const fd = new FormData();
+      fd.append('id', template.id);
 
-    try {
-      const formData = new FormData();
-
-      formData.append('id', template.id);
-
-      Object.entries(data).forEach(([key, value]) => {
-        formData.append(key, value);
+      Object.entries(formData).forEach(([key, value]) => {
+        fd.append(key, value);
       });
 
-      formData.append('questions', JSON.stringify(questions));
+      fd.append('questions', JSON.stringify(questions));
 
-      const result = await updateTemplate(formData);
+      return await updateTemplate(fd);
+    };
 
-      if (result.error) {
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: result.error,
-        });
-        return;
-      }
-
-      toast({
-        title: 'Success',
-        description: 'Template updated successfully',
-      });
-      router.back();
-      router.refresh();
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Something went wrong',
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    // Use our custom hook
+    await handleSubmit(submitTemplate, data);
   }
 
   return (
@@ -219,7 +204,7 @@ export function TemplateEditForm({ template }) {
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input {...field} disabled={isLoading} />
+                    <Input {...field} disabled={isSubmitting} />
                   </FormControl>
                   <FormDescription>
                     Give your template a clear and descriptive title
@@ -236,7 +221,7 @@ export function TemplateEditForm({ template }) {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea {...field} disabled={isLoading} />
+                    <Textarea {...field} disabled={isSubmitting} />
                   </FormControl>
                   <FormDescription>
                     Describe what this template is for
@@ -255,7 +240,7 @@ export function TemplateEditForm({ template }) {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -285,7 +270,7 @@ export function TemplateEditForm({ template }) {
                     <TagInput
                       value={field.value}
                       onChange={field.onChange}
-                      disabled={isLoading}
+                      disabled={isSubmitting}
                     />
                   </FormControl>
                   <FormDescription>
@@ -305,7 +290,7 @@ export function TemplateEditForm({ template }) {
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
-                      disabled={isLoading}
+                      disabled={isSubmitting}
                     />
                   </FormControl>
                   <FormLabel className="!mt-0">
@@ -326,7 +311,7 @@ export function TemplateEditForm({ template }) {
                       <UserSelect
                         value={field.value}
                         onChange={field.onChange}
-                        disabled={isLoading}
+                        disabled={isSubmitting}
                       />
                     </FormControl>
                     <FormDescription>
@@ -348,7 +333,7 @@ export function TemplateEditForm({ template }) {
                     <ImageUpload
                       value={field.value}
                       onChange={field.onChange}
-                      disabled={isLoading}
+                      disabled={isSubmitting}
                       onUploadingChange={setIsUploading}
                     />
                   </FormControl>
@@ -380,15 +365,15 @@ export function TemplateEditForm({ template }) {
             type="button"
             variant="outline"
             onClick={() => router.back()}
-            disabled={isLoading || isUploading}
+            disabled={isSubmitting || isUploading}
           >
             Cancel
           </Button>
           <Button
             type="submit"
-            disabled={isLoading || isUploading || !hasChanges}
+            disabled={isSubmitting || isUploading || !hasChanges}
           >
-            {isLoading
+            {isSubmitting
               ? 'Saving...'
               : hasChanges
                 ? 'Save Changes'

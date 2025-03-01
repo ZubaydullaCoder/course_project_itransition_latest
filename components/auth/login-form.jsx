@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { signIn, useSession } from 'next-auth/react';
-import { useRouter, useSearchParams } from 'next/navigation'; // Import router
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
+
 import { LoginSchema } from '@/lib/utils/validators';
 import { Mail, Lock, LogIn, Eye, EyeOff } from 'lucide-react';
 import {
@@ -18,15 +18,19 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { useFormSubmission } from '@/hooks/use-form-submission';
 
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { update } = useSession();
+
+  // Get returnTo path from query params
+  const queryReturnTo = searchParams.get('returnTo');
+
+  // Create form with validation
   const form = useForm({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -35,83 +39,74 @@ export function LoginForm() {
     },
   });
 
-  // Get returnTo path from query params
-  const queryReturnTo = searchParams.get('returnTo');
-
   // Validate the return URL is safe (internal link)
   const isValidReturnUrl = (url) => {
     return url && url.startsWith('/') && !url.startsWith('//');
   };
 
-  async function onSubmit(data) {
-    setIsLoading(true);
+  // Use the custom submission hook (without redirect path, we'll handle it manually)
+  const { isSubmitting, handleSubmit } = useFormSubmission();
 
-    try {
-      // Use redirect: false to handle errors
+  async function onSubmit(data) {
+    // Custom submission function for login
+    const loginUser = async (credentials) => {
       const result = await signIn('credentials', {
-        ...data,
+        ...credentials,
         redirect: false,
       });
 
       if (result?.error) {
-        // Handle different error cases
-        if (result.error === 'Configuration') {
-          console.log({ result });
-          toast({
-            variant: 'destructive',
-            title: 'Login Failed',
-            description: 'Invalid email or password',
-          });
-        } else {
-          toast({
-            variant: 'destructive',
-            title: 'Login Failed',
-            description: result.error || 'Authentication failed',
-          });
-        }
-        setIsLoading(false);
-        return;
+        // Return in format compatible with our hook
+        return {
+          error:
+            result.error === 'Configuration'
+              ? 'Invalid email or password'
+              : result.error || 'Authentication failed',
+        };
       }
-      await update();
+
       // Success case
-      toast({
-        title: 'Welcome back!',
-        description: 'You have successfully logged in.',
-      });
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      return { success: true };
+    };
 
-      // Look for a user-specific return path using the email from the form
-      const userSpecificPath = localStorage.getItem(
-        `returnPath_${encodeURIComponent(data.email)}`
-      );
-      // Prioritize paths: user-specific path > query param > default
-      const redirectUrl =
-        queryReturnTo && isValidReturnUrl(queryReturnTo)
-          ? queryReturnTo
-          : userSpecificPath && isValidReturnUrl(userSpecificPath)
-            ? userSpecificPath
-            : '/';
+    // Handle submission with our custom hook
+    const success = await handleSubmit(loginUser, data, {
+      customSuccessMessage: 'You have successfully logged in.',
+      onSuccess: async () => {
+        await update();
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // Clear user-specific path after use
-      if (userSpecificPath) {
-        localStorage.removeItem(`returnPath_${encodeURIComponent(data.email)}`);
-      }
+        // Look for a user-specific return path using the email
+        const userSpecificPath = localStorage.getItem(
+          `returnPath_${encodeURIComponent(data.email)}`
+        );
 
-      router.refresh();
-      router.push(redirectUrl);
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Login Failed',
-        description: 'Unable to sign in at the moment. Please try again later.',
-      });
-      setIsLoading(false);
-    }
+        // Prioritize paths: user-specific path > query param > default
+        const redirectUrl =
+          queryReturnTo && isValidReturnUrl(queryReturnTo)
+            ? queryReturnTo
+            : userSpecificPath && isValidReturnUrl(userSpecificPath)
+              ? userSpecificPath
+              : '/';
+
+        // Clear user-specific path after use
+        if (userSpecificPath) {
+          localStorage.removeItem(
+            `returnPath_${encodeURIComponent(data.email)}`
+          );
+        }
+
+        router.refresh();
+        router.push(redirectUrl);
+      },
+      // Don't auto-redirect - we handle it in the onSuccess callback
+    });
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        {/* Form fields remain the same */}
         <FormField
           control={form.control}
           name="email"
@@ -125,7 +120,7 @@ export function LoginForm() {
                     {...field}
                     type="email"
                     placeholder="name@example.com"
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                     className="pl-10"
                   />
                 </div>
@@ -134,6 +129,7 @@ export function LoginForm() {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="password"
@@ -147,7 +143,7 @@ export function LoginForm() {
                     {...field}
                     type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                     className="pl-10 pr-10"
                   />
                   <button
@@ -164,8 +160,9 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? (
+
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
+          {isSubmitting ? (
             'Loading...'
           ) : (
             <>

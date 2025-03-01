@@ -34,16 +34,21 @@ import { createTemplate } from '@/lib/actions/template-actions';
 import { TagInput } from '../../ui/tag-input';
 import { ImageUpload } from '@/components/ui/image-upload';
 import { UserSelect } from '../common/inputs/user-select';
+import { useFormSubmission } from '@/hooks/use-form-submission';
 
 export function TemplateCreateForm() {
-  const router = useRouter();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [questions, setQuestions] = useState([]);
 
+  // Use the custom form submission hook
+  const { isSubmitting, handleSubmit } = useFormSubmission({
+    successMessage: 'Template created successfully',
+    redirectPath: '/templates',
+  });
+
   // Create a single variable for disabled state
-  const isDisabled = isLoading || isUploading;
+  const isDisabled = isSubmitting || isUploading;
 
   const form = useForm({
     resolver: zodResolver(TemplateSchema),
@@ -61,7 +66,7 @@ export function TemplateCreateForm() {
   });
 
   async function onSubmit(data) {
-    // Validate questions
+    // Validate questions first
     const emptyTitleQuestions = questions.filter((q) => !q.text?.trim());
 
     if (emptyTitleQuestions.length > 0) {
@@ -82,49 +87,27 @@ export function TemplateCreateForm() {
       return;
     }
 
-    setIsLoading(true);
+    // Create submission function
+    const submitTemplate = async (formData) => {
+      const fd = new FormData();
 
-    try {
-      const formData = new FormData();
-
-      formData.append('title', data.title);
-      formData.append('description', data.description || '');
-      formData.append('topic', data.topic);
-      formData.append('tags', data.tags || '');
-      formData.append('isPublic', String(data.isPublic));
-      formData.append(
+      fd.append('title', formData.title);
+      fd.append('description', formData.description || '');
+      fd.append('topic', formData.topic);
+      fd.append('tags', formData.tags || '');
+      fd.append('isPublic', String(formData.isPublic));
+      fd.append(
         'allowedUsers',
-        data.isPublic ? '' : data.allowedUsers || ''
+        formData.isPublic ? '' : formData.allowedUsers || ''
       );
-      formData.append('image', data.image || '');
-      formData.append('questions', JSON.stringify(questions));
+      fd.append('image', formData.image || '');
+      fd.append('questions', JSON.stringify(questions));
 
-      const result = await createTemplate(formData);
+      return await createTemplate(fd);
+    };
 
-      if (result.error) {
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: result.error,
-        });
-        return;
-      }
-
-      toast({
-        title: 'Success',
-        description: 'Template created successfully',
-      });
-      router.push('/templates');
-    } catch (error) {
-      console.error('Template creation error:', error);
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Something went wrong',
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    // Use our custom hook
+    await handleSubmit(submitTemplate, data);
   }
 
   return (
@@ -316,7 +299,7 @@ export function TemplateCreateForm() {
             Cancel
           </Button>
           <Button type="submit" disabled={isDisabled}>
-            {isLoading ? 'Creating...' : 'Create Template'}
+            {isSubmitting ? 'Creating...' : 'Create Template'}
           </Button>
         </div>
       </form>
