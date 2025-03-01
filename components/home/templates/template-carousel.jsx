@@ -66,7 +66,7 @@ export function TemplateCarousel({ templates, count = 5 }) {
             </CardContent>
             <CardFooter>
               <Link
-                href={`/templates/${template.id}`}
+                href={`/templates/${template.id}?initialLoad=true`}
                 className="text-sm text-primary hover:underline"
               >
                 View template →

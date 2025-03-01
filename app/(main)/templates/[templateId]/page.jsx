@@ -11,10 +11,17 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { TemplateTabs } from '@/components/templates/template-detail/template-tabs/template-tabs';
+import { TemplatePageClientFallback } from '@/components/templates/template-detail/loading/template-page-client-fallback';
 
-export default async function TemplatePage({ params }) {
+export default async function TemplatePage({ params, searchParams }) {
   const { templateId } = await params;
   const session = await auth();
+  // If no session but has a special parameter, show a loading state instead of 404
+  // This gives the session time to initialize
+  if (!session?.user && searchParams.initialLoad === 'true') {
+    // Return a client component that can handle redirecting or showing loading state
+    return <TemplatePageClientFallback templateId={templateId} />;
+  }
   const { data: template, error } = await getTemplateById(templateId);
 
   if (error || !template) {
