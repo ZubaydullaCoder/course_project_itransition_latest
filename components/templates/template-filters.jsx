@@ -1,118 +1,40 @@
 'use client';
 
-import { useCallback, useOptimistic } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { TEMPLATE_TOPICS } from '@/lib/constants/templates';
-import { useTransition } from 'react';
-import { Clock, Globe, Lock, History, Users2, UserCircle2 } from 'lucide-react';
-
-const VIEW_FILTERS = [
-  { id: 'other', label: 'Other Templates', icon: Users2 },
-  { id: 'my', label: 'My Templates', icon: UserCircle2 },
-];
-
-const STATUS_FILTERS = [
-  { id: 'public', label: 'Public', icon: Globe },
-  { id: 'private', label: 'Private', icon: Lock },
-];
-
-const TIME_FILTERS = [
-  { id: 'latest', label: 'Latest First', icon: Clock },
-  { id: 'oldest', label: 'Oldest First', icon: History },
-];
+import { useQueryParams } from '@/hooks/use-query-params';
+import { useOptimisticFilter } from '@/hooks/use-optimistic-filter';
+import {
+  VIEW_FILTERS,
+  STATUS_FILTERS,
+  TIME_FILTERS,
+  DEFAULT_SORT,
+  getFilterById,
+} from '@/lib/constants/filters';
 
 export function TemplateFilters({
   currentTopic,
   currentTag,
   currentFilter,
   currentStatus,
-  currentSort = 'latest',
+  currentSort = DEFAULT_SORT,
 }) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [_, startTransition] = useTransition();
+  // Use the custom hooks for each filter type
+  const filter = useOptimisticFilter(currentFilter, 'filter');
+  const topic = useOptimisticFilter(currentTopic, 'topic');
+  // Add preventToggle option for sort filters to prevent toggling off
+  const sort = useOptimisticFilter(currentSort, 'sort', {
+    preventToggle: true,
+  });
+  const status = useOptimisticFilter(currentStatus, 'status');
 
-  const [optimisticFilter, setOptimisticFilter] = useOptimistic(
-    currentFilter,
-    (state, newFilter) => newFilter
-  );
-  const [optimisticTopic, setOptimisticTopic] = useOptimistic(
-    currentTopic,
-    (state, newTopic) => newTopic
-  );
-  const [optimisticSort, setOptimisticSort] = useOptimistic(
-    currentSort,
-    (state, newSort) => newSort
-  );
-
-  const [optimisticStatus, setOptimisticStatus] = useOptimistic(
-    currentStatus,
-    (state, newStatus) => newStatus
-  );
-
-  const createQueryString = useCallback(
-    (updates) => {
-      const params = new URLSearchParams(searchParams);
-      Object.entries(updates).forEach(([key, value]) => {
-        if (value) {
-          params.set(key, value);
-        } else {
-          params.delete(key);
-        }
-      });
-      return params.toString();
-    },
-    [searchParams]
-  );
-
-  const handleFilterChange = (filter) => {
-    const newFilter = filter === currentFilter ? null : filter;
-
-    startTransition(() => {
-      setOptimisticFilter(newFilter);
-      const queryString = createQueryString({ filter: newFilter });
-      router.push(`/templates${queryString ? `?${queryString}` : ''}`);
-    });
-  };
-
-  const handleTopicChange = (topic) => {
-    const newTopic = topic === currentTopic ? '' : topic;
-
-    startTransition(() => {
-      setOptimisticTopic(newTopic);
-      const queryString = createQueryString({ topic: newTopic });
-      router.push(`/templates${queryString ? `?${queryString}` : ''}`);
-    });
-  };
+  // For tag which has a different toggle behavior
+  const { toggleParam } = useQueryParams({ baseUrl: '/templates' });
 
   const handleTagClick = (tag) => {
-    const queryString = createQueryString({
-      tag: tag === currentTag ? '' : tag,
-    });
-    router.push(`/templates${queryString ? `?${queryString}` : ''}`);
-  };
-
-  // Update the status change handler to use optimistic updates
-  const handleStatusChange = (status) => {
-    // Toggle status when clicking the same one
-    const newStatus = status === currentStatus ? '' : status;
-
-    startTransition(() => {
-      setOptimisticStatus(newStatus);
-      const queryString = createQueryString({ status: newStatus });
-      router.push(`/templates${queryString ? `?${queryString}` : ''}`);
-    });
-  };
-
-  const handleSortChange = (newSort) => {
-    startTransition(() => {
-      setOptimisticSort(newSort);
-      const queryString = createQueryString({ sort: newSort });
-      router.push(`/templates${queryString ? `?${queryString}` : ''}`);
-    });
+    toggleParam('tag', tag);
   };
 
   return (
@@ -122,16 +44,16 @@ export function TemplateFilters({
         <div>
           <h3 className="mb-2 text-sm font-medium tracking-tight">View</h3>
           <div className="flex flex-wrap gap-2">
-            {VIEW_FILTERS.map((filter) => (
+            {VIEW_FILTERS.map((viewFilter) => (
               <Button
-                key={filter.id}
-                variant={optimisticFilter === filter.id ? 'secondary' : 'ghost'}
+                key={viewFilter.id}
+                variant={filter.value === viewFilter.id ? 'secondary' : 'ghost'}
                 size="sm"
                 className="justify-start"
-                onClick={() => handleFilterChange(filter.id)}
+                onClick={() => filter.handleChange(viewFilter.id)}
               >
-                <filter.icon className="mr-2 h-4 w-4" />
-                {filter.label}
+                <viewFilter.icon className="mr-2 h-4 w-4" />
+                {viewFilter.label}
               </Button>
             ))}
           </div>
@@ -139,20 +61,22 @@ export function TemplateFilters({
 
         <Separator />
 
-        {}
+        {/* Status Filters */}
         <div>
           <h3 className="mb-2 text-sm font-medium tracking-tight">Status</h3>
           <div className="flex flex-wrap gap-2">
-            {STATUS_FILTERS.map((status) => (
+            {STATUS_FILTERS.map((statusFilter) => (
               <Button
-                key={status.id}
-                variant={optimisticStatus === status.id ? 'secondary' : 'ghost'}
+                key={statusFilter.id}
+                variant={
+                  status.value === statusFilter.id ? 'secondary' : 'ghost'
+                }
                 size="sm"
                 className="justify-start"
-                onClick={() => handleStatusChange(status.id)}
+                onClick={() => status.handleChange(statusFilter.id)}
               >
-                <status.icon className="mr-2 h-4 w-4" />
-                {status.label}
+                <statusFilter.icon className="mr-2 h-4 w-4" />
+                {statusFilter.label}
               </Button>
             ))}
           </div>
@@ -160,20 +84,20 @@ export function TemplateFilters({
 
         <Separator />
 
-        {}
+        {/* Sort Filters */}
         <div>
           <h3 className="mb-2 text-sm font-medium tracking-tight">Sort By</h3>
           <div className="flex flex-wrap gap-2">
-            {TIME_FILTERS.map((sort) => (
+            {TIME_FILTERS.map((sortOption) => (
               <Button
-                key={sort.id}
-                variant={optimisticSort === sort.id ? 'secondary' : 'ghost'}
+                key={sortOption.id}
+                variant={sort.value === sortOption.id ? 'secondary' : 'ghost'}
                 size="sm"
                 className="justify-start"
-                onClick={() => handleSortChange(sort.id)}
+                onClick={() => sort.handleChange(sortOption.id)}
               >
-                <sort.icon className="mr-2 h-4 w-4" />
-                {sort.label}
+                <sortOption.icon className="mr-2 h-4 w-4" />
+                {sortOption.label}
               </Button>
             ))}
           </div>
@@ -181,20 +105,20 @@ export function TemplateFilters({
 
         <Separator />
 
-        {}
+        {/* Topics */}
         <div>
           <h3 className="mb-2 text-sm font-medium tracking-tight">Topics</h3>
           <ScrollArea className="w-full whitespace-nowrap">
             <div className="flex gap-2 pb-4">
-              {TEMPLATE_TOPICS.map((topic) => (
+              {TEMPLATE_TOPICS.map((topicName) => (
                 <Button
-                  key={topic}
-                  variant={optimisticTopic === topic ? 'secondary' : 'ghost'}
+                  key={topicName}
+                  variant={topic.value === topicName ? 'secondary' : 'ghost'}
                   size="sm"
                   className="min-w-fit"
-                  onClick={() => handleTopicChange(topic)}
+                  onClick={() => topic.handleChange(topicName)}
                 >
-                  {topic}
+                  {topicName}
                 </Button>
               ))}
             </div>
@@ -202,11 +126,11 @@ export function TemplateFilters({
           </ScrollArea>
         </div>
 
-        {}
-        {(optimisticFilter ||
-          optimisticTopic ||
+        {/* Active Filters */}
+        {(filter.isActive ||
+          topic.isActive ||
           currentTag ||
-          optimisticStatus) && (
+          status.isActive) && (
           <>
             <Separator />
             <div>
@@ -214,39 +138,36 @@ export function TemplateFilters({
                 Active Filters
               </h3>
               <div className="flex flex-wrap gap-2">
-                {optimisticFilter && (
+                {filter.isActive && (
                   <Button
                     variant="secondary"
                     size="sm"
                     className="gap-2"
-                    onClick={() => handleFilterChange(optimisticFilter)}
+                    onClick={() => filter.handleChange(filter.value)}
                   >
-                    {VIEW_FILTERS.find((f) => f.id === optimisticFilter)?.label}
+                    {getFilterById(VIEW_FILTERS, filter.value)?.label}
                     <span className="text-muted-foreground">×</span>
                   </Button>
                 )}
-                {optimisticStatus && (
+                {status.isActive && (
                   <Button
                     variant="secondary"
                     size="sm"
                     className="gap-2"
-                    onClick={() => handleStatusChange(optimisticStatus)}
+                    onClick={() => status.handleChange(status.value)}
                   >
-                    {
-                      STATUS_FILTERS.find((s) => s.id === optimisticStatus)
-                        ?.label
-                    }
+                    {getFilterById(STATUS_FILTERS, status.value)?.label}
                     <span className="text-muted-foreground">×</span>
                   </Button>
                 )}
-                {optimisticTopic && (
+                {topic.isActive && (
                   <Button
                     variant="secondary"
                     size="sm"
                     className="gap-2"
-                    onClick={() => handleTopicChange(optimisticTopic)}
+                    onClick={() => topic.handleChange(topic.value)}
                   >
-                    Topic: {optimisticTopic}
+                    Topic: {topic.value}
                     <span className="text-muted-foreground">×</span>
                   </Button>
                 )}

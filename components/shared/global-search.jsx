@@ -1,46 +1,24 @@
 // components/shared/global-search.jsx
 'use client';
 
-import { useState, useTransition, useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useTransition } from 'react';
 import { Input } from '@/components/ui/input';
 import { useDebounce } from '@/hooks/use-debounce';
 import { SearchIcon, Loader2 } from 'lucide-react';
+import { useQueryParams } from '@/hooks/use-query-params';
 
 export function GlobalSearch() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const { params, setParams } = useQueryParams({ baseUrl: '/templates' });
   const [isPending, startTransition] = useTransition();
-  const [value, setValue] = useState(searchParams.get('query') || '');
+  const [value, setValue] = useState(params.query || '');
 
-  const createQueryString = useCallback(
-    (params) => {
-      const newParams = new URLSearchParams(searchParams);
-
-      Object.entries(params).forEach(([key, value]) => {
-        if (value) {
-          newParams.set(key, value);
-        } else {
-          newParams.delete(key);
-        }
+  const handleSearch = (searchValue) => {
+    startTransition(() => {
+      setParams({
+        query: searchValue || undefined,
       });
-
-      return newParams.toString();
-    },
-    [searchParams]
-  );
-
-  const handleSearch = useCallback(
-    (searchValue) => {
-      startTransition(() => {
-        const queryString = createQueryString({
-          query: searchValue || undefined,
-        });
-        router.push(`/templates${queryString ? `?${queryString}` : ''}`);
-      });
-    },
-    [createQueryString, router]
-  );
+    });
+  };
 
   const debouncedSearch = useDebounce(handleSearch, 300);
 
