@@ -4,12 +4,12 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { SubmitButton } from '@/components/ui/form-buttons'; // Import the SubmitButton component
 import { useToast } from '@/hooks/use-toast';
 import { registerUser } from '@/lib/actions/auth';
 import { RegisterSchema } from '@/lib/utils/validators';
-import { User, Mail, Lock, UserPlus, Eye, EyeOff } from 'lucide-react'; // Added Eye icons
+import { User, Mail, Lock, UserPlus, Eye, EyeOff } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -142,16 +142,17 @@ export function RegisterForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? (
-            'Loading...'
-          ) : (
-            <>
-              <UserPlus className="mr-2 h-4 w-4" />
-              Create Account
-            </>
-          )}
-        </Button>
+
+        {/* Replace the Button with SubmitButton */}
+        <SubmitButton
+          isSubmitting={isLoading}
+          isDisabled={isLoading}
+          submittingText="Creating account..."
+          icon={UserPlus}
+          className="w-full"
+        >
+          Create Account
+        </SubmitButton>
       </form>
     </Form>
   );

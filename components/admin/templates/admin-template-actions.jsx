@@ -1,9 +1,5 @@
-
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -23,42 +19,26 @@ import {
 } from '@/components/ui/tooltip';
 import { Eye, Pencil, Trash2, BarChart } from 'lucide-react';
 import { deleteTemplate } from '@/lib/actions/admin-actions';
+import { useTemplateActions } from '@/hooks/use-template-actions';
 
 export function AdminTemplateActions({ template }) {
-  const router = useRouter();
-  const { toast } = useToast();
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  if (!template) return null;
+  // Use the template actions hook with admin-specific delete function
+  const {
+    showDeleteDialog,
+    setShowDeleteDialog,
+    isDeleting,
+    handleDelete,
+    navigateToEdit,
+    navigateToPreview,
+    navigateToResponses,
+    openDeleteDialog,
+  } = useTemplateActions({
+    template,
+    deleteAction: deleteTemplate, // Use admin delete function
+    shouldRefreshAfterDelete: true,
+  });
 
-  async function onDelete() {
-    setIsLoading(true);
-    try {
-      const result = await deleteTemplate(template.id);
-      if (result.error) {
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: result.error,
-        });
-        return;
-      }
-      toast({
-        title: 'Success',
-        description: 'Template deleted successfully',
-      });
-      router.refresh();
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Something went wrong',
-      });
-    } finally {
-      setIsLoading(false);
-      setShowDeleteDialog(false);
-    }
-  }
+  if (!template) return null;
 
   return (
     <>
@@ -66,11 +46,7 @@ export function AdminTemplateActions({ template }) {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => router.push(`/templates/${template.id}`)}
-              >
+              <Button variant="ghost" size="icon" onClick={navigateToPreview}>
                 <Eye className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -81,13 +57,7 @@ export function AdminTemplateActions({ template }) {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() =>
-                  router.push(`/templates/${template.id}/responses`)
-                }
-              >
+              <Button variant="ghost" size="icon" onClick={navigateToResponses}>
                 <BarChart className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -98,11 +68,7 @@ export function AdminTemplateActions({ template }) {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => router.push(`/templates/${template.id}/edit`)}
-              >
+              <Button variant="ghost" size="icon" onClick={navigateToEdit}>
                 <Pencil className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -116,8 +82,8 @@ export function AdminTemplateActions({ template }) {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setShowDeleteDialog(true)}
-                disabled={isLoading}
+                onClick={openDeleteDialog}
+                disabled={isDeleting}
               >
                 <Trash2 className="h-4 w-4 text-destructive" />
               </Button>
@@ -141,10 +107,10 @@ export function AdminTemplateActions({ template }) {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={onDelete}
+              onClick={handleDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {isLoading ? 'Deleting...' : 'Delete'}
+              {isDeleting ? 'Deleting...' : 'Delete'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

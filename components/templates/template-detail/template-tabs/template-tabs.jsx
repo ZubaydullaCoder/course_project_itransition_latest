@@ -6,7 +6,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { TemplateOverviewTab } from './template-overview-tab';
 import { Card } from '@/components/ui/card';
 import { TemplateResultsTab } from './results-components/template-results-tab';
-import { ViewEditResponse } from './view-edit-response';
+import { MyResponseForm } from './my-response-form';
 
 export function TemplateTabs({ template, session, userResponse, templateId }) {
   const searchParams = useSearchParams();
@@ -63,7 +63,7 @@ export function TemplateTabs({ template, session, userResponse, templateId }) {
 
         <TabsContent value="myResponse" className="mt-0">
           <Card className="p-6">
-            <ViewEditResponse template={template} response={userResponse} />
+            <MyResponseForm template={template} response={userResponse} />
           </Card>
         </TabsContent>
       </Tabs>
@@ -96,7 +96,7 @@ export function TemplateTabs({ template, session, userResponse, templateId }) {
 
       <TabsContent value="myResponse" className="mt-0">
         <Card className="p-6">
-          <ViewEditResponse template={template} response={userResponse} />
+          <MyResponseForm template={template} response={userResponse} />
         </Card>
       </TabsContent>
 

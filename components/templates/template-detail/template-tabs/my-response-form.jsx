@@ -12,15 +12,16 @@ import { QUESTION_TYPES } from '@/lib/constants/questions';
 import { submitFormResponse } from '@/lib/actions/form-actions';
 import { createFormResponseSchema } from '@/lib/utils/validators';
 import { Separator } from '@/components/ui/separator';
+import { useFormState } from '@/hooks/use-form-state';
+import { FormActions } from '@/components/ui/form-buttons';
 
-export function ViewEditResponse({ template, response }) {
+export function MyResponseForm({ template, response }) {
   const router = useRouter();
   const { toast } = useToast();
 
   const [isEditMode, setIsEditMode] = useState(!response);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [originalValues, setOriginalValues] = useState({});
-  const [hasChanges, setHasChanges] = useState(false);
   const validationSchema = createFormResponseSchema(template.questions);
 
   const form = useForm({
@@ -44,6 +45,18 @@ export function ViewEditResponse({ template, response }) {
   });
 
   const formValues = form.watch();
+
+  // Using our custom hook for form state management
+  const { hasChanges } = useFormState({
+    initialValues: originalValues,
+    currentValues: formValues,
+    options: {
+      // For non-edit mode, don't show changes
+      compareNormalized: isEditMode,
+      // For new responses (no existing response), consider any non-empty value as a change
+      deepCompare: !!response,
+    },
+  });
 
   useEffect(() => {
     if (response?.answers) {
@@ -77,44 +90,6 @@ export function ViewEditResponse({ template, response }) {
       setOriginalValues(emptyValues);
     }
   }, [response, template.questions, isEditMode]);
-
-  // Check for changes when form values change
-  useEffect(() => {
-    if (!isEditMode) {
-      // If not in edit mode, no changes
-      setHasChanges(false);
-      return;
-    }
-
-    // If this is a new response (no existing response), always allow submit
-    if (!response) {
-      // Check if any fields have values to enable submit
-      const hasValues = Object.values(formValues).some((value) => {
-        if (typeof value === 'string') {
-          return value.trim() !== '';
-        }
-        return value !== null && value !== undefined;
-      });
-      setHasChanges(hasValues);
-      return;
-    }
-
-    // Compare current form values with original values for existing responses
-    const hasChanged = Object.keys(formValues).some((key) => {
-      const original = originalValues[key];
-      const current = formValues[key];
-
-      // Normalize strings by trimming whitespace
-      const normalizedOriginal =
-        typeof original === 'string' ? original.trim() : original;
-      const normalizedCurrent =
-        typeof current === 'string' ? current.trim() : current;
-
-      return normalizedOriginal !== normalizedCurrent;
-    });
-
-    setHasChanges(hasChanged);
-  }, [formValues, originalValues, isEditMode, response]);
 
   const onSubmit = async (data) => {
     setIsSubmitting(true);
@@ -194,25 +169,15 @@ export function ViewEditResponse({ template, response }) {
             <>
               <Separator className="my-6" />
 
-              <div className="flex justify-end gap-4">
-                {response && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setIsEditMode(false)}
-                    disabled={isSubmitting}
-                  >
-                    Cancel
-                  </Button>
-                )}
-                <Button type="submit" disabled={isSubmitting || !hasChanges}>
-                  {!hasChanges
-                    ? 'No Changes'
-                    : response
-                      ? 'Save Changes'
-                      : 'Submit'}
-                </Button>
-              </div>
+              <FormActions
+                onCancel={() => setIsEditMode(false)}
+                isSubmitting={isSubmitting}
+                isDisabled={isSubmitting}
+                hasChanges={hasChanges}
+                showCancel={!!response}
+                submitText={response ? 'Save Changes' : 'Submit'}
+                noChangesText="No Changes"
+              />
             </>
           )}
         </form>

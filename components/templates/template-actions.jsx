@@ -1,15 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,44 +12,29 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { MoreVertical } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { deleteTemplate } from '@/lib/actions/template-actions';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import Link from 'next/link';
+import { useTemplateActions } from '@/hooks/use-template-actions';
 
 export function TemplateActions({ template }) {
-  const router = useRouter();
-  const { toast } = useToast();
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  async function onDelete() {
-    setIsDeleting(true);
-    try {
-      const result = await deleteTemplate(template.id);
-      if (result.error) {
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: result.error,
-        });
-        return;
-      }
-      toast({
-        title: 'Success',
-        description: 'Template deleted successfully',
-      });
-      router.push('/templates');
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Something went wrong',
-      });
-    } finally {
-      setIsDeleting(false);
-      setShowDeleteDialog(false);
-    }
-  }
+  // Use the template actions hook
+  const {
+    showDeleteDialog,
+    setShowDeleteDialog,
+    isDeleting,
+    handleDelete,
+    navigateToEdit,
+    openDeleteDialog,
+  } = useTemplateActions({
+    template,
+    shouldNavigateAfterDelete: true,
+    navigatePath: '/templates',
+  });
 
   return (
     <>
@@ -71,10 +48,7 @@ export function TemplateActions({ template }) {
           <DropdownMenuItem asChild>
             <Link href={`/templates/${template.id}/edit`}>Edit template</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem
-            className="text-red-600"
-            onClick={() => setShowDeleteDialog(true)}
-          >
+          <DropdownMenuItem className="text-red-600" onClick={openDeleteDialog}>
             Delete template
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -92,7 +66,7 @@ export function TemplateActions({ template }) {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={onDelete}
+              onClick={handleDelete}
               className="bg-red-600 hover:bg-red-700"
               disabled={isDeleting}
             >

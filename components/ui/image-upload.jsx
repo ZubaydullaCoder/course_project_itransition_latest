@@ -1,91 +1,25 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ImageIcon, Loader2, X } from 'lucide-react';
 import Image from 'next/image';
-import { useToast } from '@/hooks/use-toast';
-
-const MAX_FILE_SIZE = 5 * 1024 * 1024; 
+import { useImageUpload } from '@/hooks/use-image-upload';
 
 export function ImageUpload({ value, onChange, disabled, onUploadingChange }) {
-  const { toast } = useToast();
-  const [isUploading, setIsUploading] = useState(false);
-  const abortController = useRef(null);
-
-  const handleCancel = () => {
-    if (abortController.current) {
-      abortController.current.abort();
-      abortController.current = null;
-      setIsUploading(false);
-      onUploadingChange?.(false);
-    }
-  };
+  // Use our custom hook
+  const { isUploading, uploadImage, handleCancel } = useImageUpload({
+    onUploadingChange,
+  });
 
   async function onFileChange(e) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    
-    if (file.size > MAX_FILE_SIZE) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Image size must be less than 5MB',
-      });
-      return;
-    }
-
-    try {
-      setIsUploading(true);
-      onUploadingChange?.(true);
-
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append(
-        'upload_preset',
-        process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
-      );
-
-      
-      abortController.current = new AbortController();
-
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-        {
-          method: 'POST',
-          body: formData,
-          signal: abortController.current.signal,
-        }
-      );
-
-      const data = await response.json();
-      if (data.error) {
-        throw new Error(data.error.message);
-      }
-
-      onChange(data.secure_url);
-      toast({
-        title: 'Success',
-        description: 'Image uploaded successfully',
-      });
-    } catch (error) {
-      if (error.name === 'AbortError') {
-        toast({
-          description: 'Upload cancelled',
-        });
-      } else {
-        console.error('Upload failed:', error);
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: 'Failed to upload image',
-        });
-      }
-    } finally {
-      setIsUploading(false);
-      onUploadingChange?.(false);
-      abortController.current = null;
+    // Use the hook's uploadImage function
+    const imageUrl = await uploadImage(file);
+    if (imageUrl) {
+      onChange(imageUrl);
     }
   }
 

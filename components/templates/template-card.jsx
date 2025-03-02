@@ -37,10 +37,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import { deleteTemplate } from '@/lib/actions/template-actions';
+import { useState } from 'react';
 import { formatDate } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -48,63 +46,29 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useTemplateActions } from '@/hooks/use-template-actions';
 
 export function TemplateCard({ template, isOwner, isAdmin }) {
   const router = useRouter();
-  const { toast } = useToast();
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [copied, setCopied] = useState(false);
-
   const hasSubmitted = template.responses && template.responses.length > 0;
 
-  async function onDelete() {
-    setIsDeleting(true);
-    try {
-      const result = await deleteTemplate(template.id);
-      if (result.error) {
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: result.error,
-        });
-        return;
-      }
-      toast({
-        title: 'Success',
-        description: 'Template deleted successfully',
-      });
-      router.refresh();
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Something went wrong',
-      });
-    } finally {
-      setIsDeleting(false);
-      setShowDeleteDialog(false);
-    }
-  }
-
-  const copyLink = async () => {
-    const formUrl = `${window.location.origin}/templates/${template.id}?tab=myResponse`;
-    try {
-      await navigator.clipboard.writeText(formUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-      toast({
-        title: 'Success',
-        description: 'Form link copied to clipboard',
-      });
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to copy link',
-      });
-    }
-  };
+  // Use the template actions hook
+  const {
+    showDeleteDialog,
+    setShowDeleteDialog,
+    isDeleting,
+    copied,
+    handleDelete,
+    copyLink,
+    navigateToEdit,
+    navigateToResponses,
+    navigateToForm,
+    navigateToPreview,
+    openDeleteDialog,
+  } = useTemplateActions({
+    template,
+    shouldRefreshAfterDelete: true,
+  });
 
   return (
     <Card
@@ -114,7 +78,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
           e.stopPropagation();
           return;
         }
-        router.push(`/templates/${template.id}`);
+        navigateToPreview();
       }}
     >
       <div className="relative w-full h-[170px]">
@@ -185,6 +149,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
           </div>
         </CardContent>
       </div>
+
       <CardFooter className="flex gap-2 items-center justify-between px-2 flex-grow-0 py-1 border-t">
         <div className="flex-1 overflow-x-auto overflow-y-hidden scrollbar-hide">
           <div className="flex gap-0.5 w-max">
@@ -222,7 +187,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
                 <DropdownMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
-                    router.push(`/templates/${template.id}?tab=myResponse`);
+                    navigateToForm();
                   }}
                 >
                   <ClipboardEdit className="h-4 w-4 mr-2" />
@@ -246,7 +211,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
                 <DropdownMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
-                    router.push(`/templates/${template.id}?tab=results`);
+                    navigateToResponses();
                   }}
                 >
                   <BarChart className="h-4 w-4 mr-2" />
@@ -256,7 +221,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
                 <DropdownMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
-                    router.push(`/templates/${template.id}`);
+                    navigateToPreview();
                   }}
                 >
                   <Eye className="h-4 w-4 mr-2" />
@@ -266,7 +231,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
                 <DropdownMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
-                    router.push(`/templates/${template.id}/edit`);
+                    navigateToEdit();
                   }}
                 >
                   <Pencil className="h-4 w-4 mr-2" />
@@ -276,7 +241,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
                 <DropdownMenuItem
                   onClick={(e) => {
                     e.stopPropagation();
-                    setShowDeleteDialog(true);
+                    openDeleteDialog();
                   }}
                   className="text-destructive"
                 >
@@ -296,7 +261,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
                     size="icon"
                     onClick={(e) => {
                       e.stopPropagation();
-                      router.push(`/templates/${template.id}?tab=myResponse`);
+                      navigateToForm();
                     }}
                   >
                     <ClipboardEdit className="h-4 w-4" />
@@ -332,6 +297,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
           </div>
         )}
       </CardFooter>
+
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -344,7 +310,7 @@ export function TemplateCard({ template, isOwner, isAdmin }) {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={onDelete}
+              onClick={handleDelete}
               className="bg-red-600 hover:bg-red-700"
               disabled={isDeleting}
             >

@@ -1,7 +1,5 @@
-
 'use client';
 
-import { useState } from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,42 +11,29 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
-import { deleteTemplate } from '@/lib/actions/template-actions';
+import { useTemplateActions } from '@/hooks/use-template-actions';
 import { Loader2 } from 'lucide-react';
 
 export function DeleteTemplateDialog({ isOpen, template, onClose, onSuccess }) {
-  const [isDeleting, setIsDeleting] = useState(false);
-  const { toast } = useToast();
+  // Use the template actions hook with custom configuration
+  const { isDeleting, handleDelete } = useTemplateActions({
+    template,
+    onSuccessDelete: onSuccess, // Pass the success callback
+    deleteAction: async (templateId) => {
+      // We're using the default deleteTemplate function from the hook
+      // but wrapping it to handle the dialog closing
+      const result = await import('@/lib/actions/template-actions').then(
+        (mod) => mod.deleteTemplate(templateId)
+      );
+      if (!result.error) {
+        onClose();
+      }
+      return result;
+    },
+    shouldRefreshAfterDelete: false, // Let the parent component handle updates
+  });
 
   if (!template) return null;
-
-  async function handleDelete() {
-    setIsDeleting(true);
-    try {
-      const result = await deleteTemplate(template.id);
-
-      if (result.error) {
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: result.error,
-        });
-        return;
-      }
-
-      onSuccess(template.id);
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to delete template',
-      });
-    } finally {
-      setIsDeleting(false);
-      onClose();
-    }
-  }
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>

@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { useTemplateActions } from '@/hooks/use-template-actions';
 import { DeleteTemplateDialog } from '@/components/templates/common/delete-template-dialog';
 
 export function UserTemplatesTable() {
@@ -36,6 +37,13 @@ export function UserTemplatesTable() {
   const [sorting, setSorting] = useState({
     column: 'createdAt',
     direction: 'desc',
+  });
+
+  // For direct template actions (view, edit)
+  // We only need navigating functions so we can create a simplified version
+  const templateActions = useTemplateActions({
+    // No specific template here as we're using it for navigation only
+    shouldRefreshAfterDelete: false,
   });
 
   useEffect(() => {
@@ -87,14 +95,13 @@ export function UserTemplatesTable() {
   const sortedTemplates = [...templates].sort((a, b) => {
     const { column, direction } = sorting;
 
-    // For title sorting
+    // Sorting logic remains unchanged
     if (column === 'title') {
       return direction === 'asc'
         ? a.title.localeCompare(b.title)
         : b.title.localeCompare(a.title);
     }
 
-    // For status sorting
     if (column === 'status') {
       const statusA = a.isPublic ? 'Public' : 'Private';
       const statusB = b.isPublic ? 'Public' : 'Private';
@@ -103,14 +110,12 @@ export function UserTemplatesTable() {
         : statusB.localeCompare(statusA);
     }
 
-    // For created date
     if (column === 'createdAt') {
       const dateA = new Date(a.createdAt);
       const dateB = new Date(b.createdAt);
       return direction === 'asc' ? dateA - dateB : dateB - dateA;
     }
 
-    // For responses count
     if (column === 'responses') {
       const countA = a._count?.responses || 0;
       const countB = b._count?.responses || 0;
@@ -144,6 +149,7 @@ export function UserTemplatesTable() {
       </CardHeader>
       <CardContent>
         {isLoading ? (
+          // Loading skeleton remains unchanged
           <div className="rounded-md border">
             <Table>
               <TableHeader>
@@ -198,7 +204,7 @@ export function UserTemplatesTable() {
               You havent created any templates yet
             </p>
             <Button asChild variant="outline">
-              <Link href="/templates/new">
+              <Link href="/templates/create">
                 <Plus className="w-4 h-4 mr-2" />
                 Create Your First Template
               </Link>
@@ -249,43 +255,59 @@ export function UserTemplatesTable() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sortedTemplates.map((template) => (
-                  <TableRow key={template.id}>
-                    <TableCell className="font-medium">
-                      {template.title}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={template.isPublic ? 'default' : 'outline'}
-                      >
-                        {template.isPublic ? 'Public' : 'Private'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{formatDate(template.createdAt)}</TableCell>
-                    <TableCell>{template._count?.responses || 0}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="icon" asChild>
-                          <Link href={`/templates/${template.id}`}>
-                            <Eye className="h-4 w-4" />
-                          </Link>
-                        </Button>
-                        <Button variant="ghost" size="icon" asChild>
-                          <Link href={`/templates/${template.id}/edit`}>
-                            <Edit className="h-4 w-4" />
-                          </Link>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setTemplateToDelete(template)}
+                {sortedTemplates.map((template) => {
+                  // Create an actions object for this specific template
+                  const actions = {
+                    navigateToPreview: () =>
+                      templateActions.navigateToPreview({
+                        ...templateActions,
+                        template,
+                      }),
+                    navigateToEdit: () =>
+                      templateActions.navigateToEdit({
+                        ...templateActions,
+                        template,
+                      }),
+                  };
+
+                  return (
+                    <TableRow key={template.id}>
+                      <TableCell className="font-medium">
+                        {template.title}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={template.isPublic ? 'default' : 'outline'}
                         >
-                          <Trash className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                          {template.isPublic ? 'Public' : 'Private'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{formatDate(template.createdAt)}</TableCell>
+                      <TableCell>{template._count?.responses || 0}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button variant="ghost" size="icon" asChild>
+                            <Link href={`/templates/${template.id}`}>
+                              <Eye className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                          <Button variant="ghost" size="icon" asChild>
+                            <Link href={`/templates/${template.id}/edit`}>
+                              <Edit className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setTemplateToDelete(template)}
+                          >
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </div>

@@ -1,36 +1,23 @@
 'use client';
 
-import { useState } from 'react';
-import { signIn, useSession } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-
 import { LoginSchema } from '@/lib/utils/validators';
-import { Mail, Lock, LogIn, Eye, EyeOff } from 'lucide-react';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { useFormSubmission } from '@/hooks/use-form-submission';
+import { signIn, useSession } from 'next-auth/react';
+import { Mail, LogIn } from 'lucide-react';
+import { SmartForm } from '@/components/common/smart-form';
+import { FormFieldWithIcon } from '@/components/common/form-field-with-icon';
+import { PasswordField } from '@/components/common/password-field';
+import { FormSection } from '@/components/common/form-section';
 
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const [showPassword, setShowPassword] = useState(false);
   const { update } = useSession();
-
-  // Get returnTo path from query params
   const queryReturnTo = searchParams.get('returnTo');
 
-  // Create form with validation
   const form = useForm({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -39,16 +26,14 @@ export function LoginForm() {
     },
   });
 
-  // Validate the return URL is safe (internal link)
   const isValidReturnUrl = (url) => {
     return url && url.startsWith('/') && !url.startsWith('//');
   };
 
-  // Use the custom submission hook (without redirect path, we'll handle it manually)
   const { isSubmitting, handleSubmit } = useFormSubmission();
 
   async function onSubmit(data) {
-    // Custom submission function for login
+    // Login implementation remains the same
     const loginUser = async (credentials) => {
       const result = await signIn('credentials', {
         ...credentials,
@@ -56,7 +41,6 @@ export function LoginForm() {
       });
 
       if (result?.error) {
-        // Return in format compatible with our hook
         return {
           error:
             result.error === 'Configuration'
@@ -65,23 +49,21 @@ export function LoginForm() {
         };
       }
 
-      // Success case
       return { success: true };
     };
 
     // Handle submission with our custom hook
-    const success = await handleSubmit(loginUser, data, {
+    await handleSubmit(loginUser, data, {
       customSuccessMessage: 'You have successfully logged in.',
       onSuccess: async () => {
+        // Redirect logic remains the same
         await update();
         await new Promise((resolve) => setTimeout(resolve, 500));
 
-        // Look for a user-specific return path using the email
         const userSpecificPath = localStorage.getItem(
           `returnPath_${encodeURIComponent(data.email)}`
         );
 
-        // Prioritize paths: user-specific path > query param > default
         const redirectUrl =
           queryReturnTo && isValidReturnUrl(queryReturnTo)
             ? queryReturnTo
@@ -89,7 +71,6 @@ export function LoginForm() {
               ? userSpecificPath
               : '/';
 
-        // Clear user-specific path after use
         if (userSpecificPath) {
           localStorage.removeItem(
             `returnPath_${encodeURIComponent(data.email)}`
@@ -99,79 +80,40 @@ export function LoginForm() {
         router.refresh();
         router.push(redirectUrl);
       },
-      // Don't auto-redirect - we handle it in the onSuccess callback
     });
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {/* Form fields remain the same */}
-        <FormField
+    <SmartForm
+      form={form}
+      onSubmit={onSubmit}
+      isSubmitting={isSubmitting}
+      isDisabled={isSubmitting}
+      submitText="Sign In"
+      submittingText="Signing in..."
+      showCancelButton={false}
+      withCard={false}
+      submitIcon={LogIn} // Add login icon for consistency
+      submitButtonClassName="w-full" // Make button full width like register form
+      actionButtonsClassName="flex justify-center" // Center the button
+    >
+      <FormSection>
+        <FormFieldWithIcon
           control={form.control}
           name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    {...field}
-                    type="email"
-                    placeholder="name@example.com"
-                    disabled={isSubmitting}
-                    className="pl-10"
-                  />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Email"
+          placeholder="name@example.com"
+          type="email"
+          leadingIcon={<Mail className="h-4 w-4" />}
+          disabled={isSubmitting}
         />
 
-        <FormField
+        <PasswordField
           control={form.control}
           name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    {...field}
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="••••••••"
-                    disabled={isSubmitting}
-                    className="pl-10 pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-                    tabIndex="-1"
-                  >
-                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          disabled={isSubmitting}
         />
-
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? (
-            'Loading...'
-          ) : (
-            <>
-              <LogIn className="mr-2 h-4 w-4" />
-              Sign In
-            </>
-          )}
-        </Button>
-      </form>
-    </Form>
+      </FormSection>
+    </SmartForm>
   );
 }
