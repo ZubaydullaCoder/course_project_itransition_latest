@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -10,28 +9,33 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
+  CardFooter,
 } from '@/components/ui/card';
 import { UserTemplatesTable } from './user-templates-table';
 import { UserResponsesTable } from './user-responses-table';
-import { CalendarDays, Mail, User } from 'lucide-react';
+import { CalendarDays, Mail, User, Cloud, Building } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { SalesforceConnectForm } from './salesforce-connect-form';
+import { useSession } from 'next-auth/react';
+import { SalesforceTestButton } from './salesforce-test-button';
 
 export function UserProfilePage({ user }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const tabParam = searchParams.get('tab');
+  const { data: session } = useSession();
+  const [showSalesforceForm, setShowSalesforceForm] = useState(false);
 
-  
   const [activeTab, setActiveTab] = useState(() => {
     return tabParam === 'templates' || tabParam === 'responses'
       ? tabParam
       : 'profile';
   });
 
-  
   const handleTabChange = (value) => {
     setActiveTab(value);
-    
+
     const params = new URLSearchParams(searchParams);
     if (value === 'profile') {
       params.delete('tab');
@@ -43,6 +47,11 @@ export function UserProfilePage({ user }) {
       scroll: false,
     });
   };
+
+  // Check if current user can access Salesforce integration
+  // (only the user themselves or admins)
+  const canAccessSalesforce =
+    session?.user?.id === user.id || session?.user?.role === 'ADMIN';
 
   return (
     <div className="container py-6 space-y-6">
@@ -107,6 +116,35 @@ export function UserProfilePage({ user }) {
                 )}
               </div>
             </CardContent>
+            {canAccessSalesforce && (
+              <CardFooter className="border-t pt-6">
+                <div className="w-full">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="font-medium flex items-center">
+                        <Building className="w-4 h-4 mr-2 text-muted-foreground" />
+                        Salesforce Integration
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        Connect your profile to Salesforce CRM
+                      </p>
+                    </div>
+                    <div className="flex space-x-2">
+                      <SalesforceTestButton /> {/* Add the test button here */}
+                      <Button
+                        onClick={() => setShowSalesforceForm(true)}
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center"
+                      >
+                        <Cloud className="h-4 w-4 mr-2" />
+                        Connect to Salesforce
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardFooter>
+            )}
           </Card>
         </TabsContent>
 
@@ -118,6 +156,13 @@ export function UserProfilePage({ user }) {
           <UserResponsesTable />
         </TabsContent>
       </Tabs>
+
+      {showSalesforceForm && (
+        <SalesforceConnectForm
+          user={user}
+          onClose={() => setShowSalesforceForm(false)}
+        />
+      )}
     </div>
   );
 }
