@@ -1,83 +1,37 @@
 'use client';
 
-import { useState } from 'react';
+import { DndContext, closestCenter } from '@dnd-kit/core';
 import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import {
-  arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { QuestionTypeCards } from './question-type-cards';
 import { SortableQuestionForm } from './sortable-question-form';
+import { useQuestionManager } from '@/hooks/use-question-manager';
+import { useDragSensors } from '@/hooks/use-drag-sensors';
 
-export function QuestionsSection({ value = [], onChange }) {
-  const [questions, setQuestions] = useState(value);
+export function QuestionsSection({ value = [], onChange, disabled = false }) {
+  // Use our custom hooks
+  const {
+    questions,
+    questionCounts,
+    addQuestion,
+    updateQuestion,
+    removeQuestion,
+    handleDragEnd,
+  } = useQuestionManager({
+    initialQuestions: value,
+    onChange,
+  });
 
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
-  const questionCounts = questions.reduce((acc, q) => {
-    acc[q.type] = (acc[q.type] || 0) + 1;
-    return acc;
-  }, {});
-
-  const handleQuestionAdd = (type) => {
-    const newQuestion = {
-      id: `temp_${Date.now()}`,
-      type,
-      text: '',
-      description: '',
-      required: true,
-      showInResults: true,
-    };
-    const newQuestions = [...questions, newQuestion];
-    setQuestions(newQuestions);
-    onChange?.(newQuestions);
-  };
-
-  const handleQuestionChange = (id, changes) => {
-    const newQuestions = questions.map((q) =>
-      q.id === id ? { ...q, ...changes } : q
-    );
-    setQuestions(newQuestions);
-    onChange?.(newQuestions);
-  };
-
-  const handleQuestionRemove = (id) => {
-    const newQuestions = questions.filter((q) => q.id !== id);
-    setQuestions(newQuestions);
-    onChange?.(newQuestions);
-  };
-
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-
-    const oldIndex = questions.findIndex((q) => q.id === active.id);
-    const newIndex = questions.findIndex((q) => q.id === over.id);
-
-    const newQuestions = arrayMove(questions, oldIndex, newIndex);
-    setQuestions(newQuestions);
-    onChange?.(newQuestions);
-  };
+  const sensors = useDragSensors();
 
   return (
     <div className="space-y-6">
       <QuestionTypeCards
-        onSelect={handleQuestionAdd}
+        onSelect={addQuestion}
         questionCounts={questionCounts}
+        disabled={disabled}
       />
 
       <DndContext
@@ -97,10 +51,9 @@ export function QuestionsSection({ value = [], onChange }) {
                 type={question.type}
                 initialData={question}
                 index={index}
-                onChange={(changes) =>
-                  handleQuestionChange(question.id, changes)
-                }
-                onRemove={() => handleQuestionRemove(question.id)}
+                onChange={(changes) => updateQuestion(question.id, changes)}
+                onRemove={() => removeQuestion(question.id)}
+                disabled={disabled}
               />
             ))}
           </div>
