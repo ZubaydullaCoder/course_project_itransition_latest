@@ -18,13 +18,16 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { useFormSubmission } from '@/hooks/use-form-submission';
+import { usePasswordVisibility } from '@/hooks/use-password-visibility';
 
 export function RegisterForm() {
-  const router = useRouter();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
+  // Use the password visibility hook
+  const { showPassword, togglePasswordVisibility } = usePasswordVisibility();
+
+  // Initialize form with validation
   const form = useForm({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
@@ -34,36 +37,18 @@ export function RegisterForm() {
     },
   });
 
-  async function onSubmit(data) {
-    setIsLoading(true);
+  // Use form submission hook
+  const { isSubmitting, handleSubmit } = useFormSubmission({
+    successMessage: 'Account created successfully!',
+    redirectPath: '/login',
+  });
 
-    try {
-      const result = await registerUser(data);
-
-      if (result.error) {
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: result.error,
-        });
-        return;
-      }
-
-      toast({
-        title: 'Success',
-        description: result.success,
-      });
-      router.push('/login');
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: 'Something went wrong',
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }
+  // Submit handler
+  const onSubmit = async (data) => {
+    await handleSubmit(registerUser, data, {
+      customErrorMessage: 'Registration failed. Please try again.',
+    });
+  };
 
   return (
     <Form {...form}>
@@ -81,7 +66,7 @@ export function RegisterForm() {
                     {...field}
                     type="text"
                     placeholder="John Doe"
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                     className="pl-10"
                   />
                 </div>
@@ -103,7 +88,7 @@ export function RegisterForm() {
                     {...field}
                     type="email"
                     placeholder="name@example.com"
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                     className="pl-10"
                   />
                 </div>
@@ -125,12 +110,12 @@ export function RegisterForm() {
                     {...field}
                     type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                     className="pl-10 pr-10"
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={togglePasswordVisibility}
                     className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
                     tabIndex="-1"
                   >
@@ -143,10 +128,9 @@ export function RegisterForm() {
           )}
         />
 
-        {/* Replace the Button with SubmitButton */}
         <SubmitButton
-          isSubmitting={isLoading}
-          isDisabled={isLoading}
+          isSubmitting={isSubmitting}
+          isDisabled={isSubmitting}
           submittingText="Creating account..."
           icon={UserPlus}
           className="w-full"
