@@ -22,7 +22,7 @@ export default async function RootLayout({ children }) {
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${poppins.className} no-scroll`}>
+      <body className={`${poppins.className} no-scroll h-screen`}>
         <SessionProvider session={session}>
           <ThemeProvider>
             {children}

@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function RegisterPage() {
   return (
-    <div className="w-full max-w-md p-8 space-y-4">
+    <div className="w-full h-full max-w-md p-8 space-y-4">
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
           Create an account

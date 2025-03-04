@@ -12,7 +12,7 @@ export default async function AuthRootLayout({ children }) {
 
   return (
     <AuthLayout>
-      <div className="flex max-h-screen items-center justify-center bg-background overflow-hidden">
+      <div className="flex h-full items-center justify-center bg-background overflow-hidden">
         {children}
       </div>
     </AuthLayout>

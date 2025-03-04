@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import { Eye, EyeOff, Lock } from 'lucide-react';
 import { FormFieldWithIcon } from '@/components/common/form-field-with-icon';
+import { usePasswordVisibility } from '@/hooks/use-password-visibility';
 
 /**
  * PasswordField - A specialized field for password entry with toggle visibility
@@ -18,9 +18,7 @@ export function PasswordField({
   className,
   ...props
 }) {
-  const [showPassword, setShowPassword] = useState(false);
-
-  const toggleVisibility = () => setShowPassword((prev) => !prev);
+  const { showPassword, togglePasswordVisibility } = usePasswordVisibility();
 
   return (
     <FormFieldWithIcon
@@ -34,7 +32,7 @@ export function PasswordField({
       type={showPassword ? 'text' : 'password'}
       leadingIcon={<Lock className="h-4 w-4" />}
       trailingIcon={showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-      onTrailingIconClick={toggleVisibility}
+      onTrailingIconClick={togglePasswordVisibility}
       className={className}
       {...props}
     />
