@@ -10,13 +10,13 @@ export default function CreateTemplatePage() {
   ];
 
   return (
-    <PageContainer breadcrumbItems={breadcrumbItems} maxWidth="3xl" spacing="6">
-      <div>
-        <h1 className="text-2xl font-bold">Create Template</h1>
-        <p className="text-muted-foreground">
-          Create a new template for your forms
-        </p>
-      </div>
+    <PageContainer
+      breadcrumbItems={breadcrumbItems}
+      maxWidth="3xl"
+      spacing="6"
+      title="Create Template"
+      description="Create a new template for your forms"
+    >
       <TemplateCreateForm />
     </PageContainer>
   );

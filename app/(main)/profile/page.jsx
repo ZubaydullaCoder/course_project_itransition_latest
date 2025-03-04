@@ -22,7 +22,11 @@ export default async function ProfilePage() {
   ];
 
   return (
-    <PageContainer breadcrumbItems={breadcrumbItems}>
+    <PageContainer
+      breadcrumbItems={breadcrumbItems}
+      title="My Profile"
+      description="View and manage your profile information"
+    >
       <UserProfilePage user={session.user} />
     </PageContainer>
   );

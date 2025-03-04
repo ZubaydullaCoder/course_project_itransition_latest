@@ -20,13 +20,13 @@ export default async function EditTemplatePage({ params }) {
   ];
 
   return (
-    <PageContainer breadcrumbItems={breadcrumbItems} maxWidth="3xl" spacing="6">
-      <div>
-        <h1 className="text-2xl font-bold">Edit Template</h1>
-        <p className="text-muted-foreground">
-          Update your template details and questions
-        </p>
-      </div>
+    <PageContainer
+      breadcrumbItems={breadcrumbItems}
+      maxWidth="3xl"
+      spacing="6"
+      title="Edit Template"
+      description="Update your template details and questions"
+    >
       <TemplateEditForm template={result.data} />
     </PageContainer>
   );

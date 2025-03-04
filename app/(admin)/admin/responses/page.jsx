@@ -1,17 +1,8 @@
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
-import Link from 'next/link';
 import { getAdminResponses } from '@/lib/actions/admin-actions';
 import { AdminResponsesTable } from '@/components/admin/responses/admin-responses-table';
-import { Heading } from '@/components/ui/heading';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
+import { PageContainer } from '@/components/layout/page-container';
 
 export default async function AdminResponsesPage() {
   const session = await auth();
@@ -26,34 +17,20 @@ export default async function AdminResponsesPage() {
     throw new Error(error);
   }
 
+  // Define breadcrumb items for this page
+  const breadcrumbItems = [
+    { href: '/', label: 'Home' },
+    { href: '/admin', label: 'Admin' },
+    { label: 'Responses', isCurrent: true },
+  ];
+
   return (
-    <div className="space-y-6">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/" asChild>
-              <Link href="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/admin" asChild>
-              <Link href="/admin">Admin</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Responses</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
-      <Heading
-        title="Form Responses Management"
-        description="View and manage all form responses in the system"
-      />
-
+    <PageContainer
+      breadcrumbItems={breadcrumbItems}
+      title="Form Responses Management"
+      description="View and manage all form responses in the system"
+    >
       <AdminResponsesTable initialResponses={data} />
-    </div>
+    </PageContainer>
   );
 }

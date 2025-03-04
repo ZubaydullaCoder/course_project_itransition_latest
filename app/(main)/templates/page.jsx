@@ -28,18 +28,20 @@ export default async function TemplatesPage({ searchParams }) {
     { label: 'Templates', isCurrent: true },
   ];
 
-  return (
-    <PageContainer breadcrumbItems={breadcrumbItems}>
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Templates</h1>
-          <p className="text-muted-foreground">Manage your form templates</p>
-        </div>
-        <Link href="/templates/create">
-          <Button>Create Template</Button>
-        </Link>
-      </div>
+  // Create the action button
+  const createTemplateButton = (
+    <Link href="/templates/create">
+      <Button>Create Template</Button>
+    </Link>
+  );
 
+  return (
+    <PageContainer
+      breadcrumbItems={breadcrumbItems}
+      title="Templates"
+      description="Manage your form templates"
+      actions={createTemplateButton}
+    >
       <div className="grid grid-cols-[280px_1fr] gap-6">
         <div className="space-y-4">
           <TemplateFilters
