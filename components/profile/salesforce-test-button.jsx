@@ -53,7 +53,7 @@ export function SalesforceTestButton() {
   };
 
   return (
-    <div>
+    <div className="relative">
       <Button
         onClick={testSalesforceAuth}
         disabled={isLoading}
@@ -69,22 +69,8 @@ export function SalesforceTestButton() {
           'Test Salesforce Auth'
         )}
       </Button>
-      <Button
-        onClick={() => (window.location.href = '/api/salesforce/auth-redirect')}
-        variant="outline"
-        size="sm"
-      >
-        Direct Auth Test
-      </Button>
-      {/* <Button
-        onClick={() => (window.location.href = '/api/salesforce/auth-redirect')}
-        variant="secondary"
-        size="sm"
-      >
-        Connect to Salesforce
-      </Button> */}
       {debugInfo && (
-        <div className="mt-2 text-xs text-muted-foreground">
+        <div className="absolute top-9 w-[20rem] left-0 text-xs text-muted-foreground">
           Auth URL generated: Check console for details
         </div>
       )}

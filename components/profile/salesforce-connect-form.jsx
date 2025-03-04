@@ -149,8 +149,10 @@ export function SalesforceConnectForm({ user, onClose }) {
       }
 
       toast({
-        title: 'Success!',
-        description: 'Your information has been sent to Salesforce',
+        title: result.isDuplicate ? 'Information Found' : 'Success!',
+        description: result.isDuplicate
+          ? 'You already have a record in Salesforce'
+          : 'Your information has been sent to Salesforce',
       });
 
       onClose();
