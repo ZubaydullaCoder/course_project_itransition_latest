@@ -1,15 +1,7 @@
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import { TemplateEditForm } from '@/components/templates/template-edit/template-edit-form';
 import { getTemplateForEdit } from '@/lib/actions/template-actions';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
+import { PageContainer } from '@/components/layout/page-container';
 
 export default async function EditTemplatePage({ params }) {
   const { templateId } = await params;
@@ -19,34 +11,16 @@ export default async function EditTemplatePage({ params }) {
     notFound();
   }
 
-  return (
-    <div className="container max-w-3xl py-6 space-y-6">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/" asChild>
-              <Link href="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/templates" asChild>
-              <Link href="/templates">Templates</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href={`/templates/${templateId}`} asChild>
-              <Link href={`/templates/${templateId}`}>{result.data.title}</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Edit Template</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+  // Define breadcrumb items for this page
+  const breadcrumbItems = [
+    { href: '/', label: 'Home' },
+    { href: '/templates', label: 'Templates' },
+    { href: `/templates/${templateId}`, label: result.data.title },
+    { label: 'Edit Template', isCurrent: true },
+  ];
 
+  return (
+    <PageContainer breadcrumbItems={breadcrumbItems} maxWidth="3xl" spacing="6">
       <div>
         <h1 className="text-2xl font-bold">Edit Template</h1>
         <p className="text-muted-foreground">
@@ -54,6 +28,6 @@ export default async function EditTemplatePage({ params }) {
         </p>
       </div>
       <TemplateEditForm template={result.data} />
-    </div>
+    </PageContainer>
   );
 }

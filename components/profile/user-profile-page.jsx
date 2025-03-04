@@ -54,7 +54,7 @@ export function UserProfilePage({ user }) {
     session?.user?.id === user.id || session?.user?.role === 'ADMIN';
 
   return (
-    <div className="container py-6 space-y-6">
+    <div className="py-6 space-y-6">
       <div className="flex items-center space-x-4">
         <Avatar className="h-16 w-16">
           <AvatarImage src={user.image} alt={user.name || 'User'} />

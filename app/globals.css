@@ -101,7 +101,7 @@ body {
 
 /* Custom styles for Swiper */
 .swiper {
-  padding: 2rem 1rem !important;
+  padding: 2rem 0.5rem !important;
 }
 
 .swiper-button-next,
