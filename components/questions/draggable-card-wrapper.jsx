@@ -3,7 +3,6 @@ import { GripVertical as Grip } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
 export function DraggableCardWrapper({
-  id,
   isDragging,
   children,
   attributes,

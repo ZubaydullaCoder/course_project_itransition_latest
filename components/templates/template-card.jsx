@@ -38,7 +38,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+
 import { formatDate } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -49,7 +49,6 @@ import {
 import { useTemplateActions } from '@/hooks/use-template-actions';
 
 export function TemplateCard({ template, isOwner, isAdmin }) {
-  const router = useRouter();
   const hasSubmitted = template.responses && template.responses.length > 0;
 
   // Use the template actions hook

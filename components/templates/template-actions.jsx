@@ -28,7 +28,7 @@ export function TemplateActions({ template }) {
     setShowDeleteDialog,
     isDeleting,
     handleDelete,
-    navigateToEdit,
+
     openDeleteDialog,
   } = useTemplateActions({
     template,
