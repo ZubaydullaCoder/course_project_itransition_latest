@@ -2,32 +2,77 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { UserProfilePage } from '@/components/profile/user-profile-page';
 import { PageContainer } from '@/components/layout/page-container';
+import prisma from '@/lib/prisma/client';
 
 export const metadata = {
-  title: 'My Profile',
-  description: 'View and manage your profile information',
+  title: 'Profile',
+  description: 'View and manage profile information',
 };
 
-export default async function ProfilePage() {
+export default async function ProfilePage({ searchParams }) {
   const session = await auth();
 
   if (!session?.user) {
     return redirect('/auth/signin');
   }
 
+  // Check if admin is viewing another user's profile
+  // Fix: Correctly extract userId from searchParams
+  const { userId } = await searchParams;
+  let profileUser = session.user;
+  let isAdminView = false;
+
+  if (userId && userId !== session.user.id) {
+    // Only admins can view other users' profiles
+    if (session.user.role !== 'ADMIN') {
+      return redirect('/profile');
+    }
+
+    // Get the requested user data
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+      },
+    });
+
+    if (!user) {
+      return redirect('/admin/users');
+    }
+
+    profileUser = user;
+    isAdminView = true;
+  }
+
   // Define breadcrumb items for this page
-  const breadcrumbItems = [
-    { href: '/', label: 'Home' },
-    { label: 'Profile', isCurrent: true },
-  ];
+  const breadcrumbItems = isAdminView
+    ? [
+        { href: '/', label: 'Home' },
+        { href: '/admin', label: 'Admin' },
+        { href: '/admin/users', label: 'Users' },
+        { label: profileUser.name || 'User Profile', isCurrent: true },
+      ]
+    : [
+        { href: '/', label: 'Home' },
+        { label: 'Profile', isCurrent: true },
+      ];
 
   return (
     <PageContainer
       breadcrumbItems={breadcrumbItems}
-      title="My Profile"
-      description="View and manage your profile information"
+      title={isAdminView ? `${profileUser.name}'s Profile` : 'My Profile'}
+      description={
+        isAdminView
+          ? `View and manage user profile information`
+          : 'View and manage your profile information'
+      }
     >
-      <UserProfilePage user={session.user} />
+      <UserProfilePage user={profileUser} isAdminView={isAdminView} />
     </PageContainer>
   );
 }

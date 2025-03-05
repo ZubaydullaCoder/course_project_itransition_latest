@@ -20,7 +20,7 @@ import { SalesforceConnectForm } from './salesforce-connect-form';
 import { useSession } from 'next-auth/react';
 import { SalesforceTestButton } from './salesforce-test-button';
 
-export function UserProfilePage({ user }) {
+export function UserProfilePage({ user, isAdminView = false }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const tabParam = searchParams.get('tab');
@@ -53,16 +53,45 @@ export function UserProfilePage({ user }) {
   const canAccessSalesforce =
     session?.user?.id === user.id || session?.user?.role === 'ADMIN';
 
+  // Add a back button for admin view
+  const backToUsersManagement = () => {
+    router.push('/admin/users');
+  };
+
   return (
     <div className="py-6 space-y-6">
+      {isAdminView && (
+        <div className="flex items-center">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={backToUsersManagement}
+            className="mb-4"
+          >
+            ← Back to Users Management
+          </Button>
+        </div>
+      )}
+
       <div className="flex items-center space-x-4">
         <Avatar className="h-16 w-16">
-          <AvatarImage src={user.image} alt={user.name || 'User'} />
+          {/* Use optional chaining since image might not exist */}
+          <AvatarImage src={user?.image} alt={user.name || 'User'} />
           <AvatarFallback>{user.name?.[0] || 'U'}</AvatarFallback>
         </Avatar>
         <div>
           <h1 className="text-2xl font-bold">{user.name}</h1>
           <p className="text-muted-foreground">{user.email}</p>
+          {isAdminView && user.role === 'ADMIN' && (
+            <span className="text-xs bg-primary/10 text-primary px-1.5 py-0.5 rounded mt-1 inline-block">
+              Admin
+            </span>
+          )}
+          {isAdminView && !user.isActive && (
+            <span className="text-xs bg-destructive/10 text-destructive px-1.5 py-0.5 rounded mt-1 ml-2 inline-block">
+              Blocked
+            </span>
+          )}
         </div>
       </div>
 

@@ -18,7 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { Ban, Shield, ShieldOff, Trash2 } from 'lucide-react';
+import { Ban, Eye, Shield, ShieldOff, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import {
@@ -120,10 +120,30 @@ export function UserTableActions({ user }) {
     }
   }
 
+  function viewUserProfile() {
+    router.push(`/profile?userId=${user.id}`);
+  }
+
   return (
     <>
       <div className="flex items-center gap-2">
         <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={viewUserProfile}
+                disabled={isLoading}
+              >
+                <Eye className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>View Profile</p>
+            </TooltipContent>
+          </Tooltip>
+
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
