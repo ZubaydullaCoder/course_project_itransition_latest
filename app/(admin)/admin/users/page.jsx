@@ -14,7 +14,7 @@ export default async function UsersPage() {
     );
   }
 
-  // Define breadcrumb items for this page
+  
   const breadcrumbItems = [
     { href: '/', label: 'Home' },
     { href: '/admin', label: 'Admin' },

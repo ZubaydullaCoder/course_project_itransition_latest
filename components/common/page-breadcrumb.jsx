@@ -1,4 +1,4 @@
-// components/common/page-breadcrumb.jsx
+
 import Link from 'next/link';
 import {
   Breadcrumb,
@@ -10,13 +10,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import React from 'react';
 
-/**
- * Reusable breadcrumb component
- * @param {Object[]} items - Array of breadcrumb items
- * @param {string} items[].href - Link for the breadcrumb item (optional for the last item)
- * @param {string} items[].label - Text to display for the breadcrumb item
- * @param {boolean} items[].isCurrent - Whether this is the current page (last item)
- */
+
 export function PageBreadcrumb({ items = [] }) {
   if (!items || items.length === 0) {
     return null;

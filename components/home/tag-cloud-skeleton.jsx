@@ -1,4 +1,4 @@
-// components/home/tag-cloud-skeleton.jsx
+
 import { SkeletonWrapper } from '@/components/ui/skeleton-wrapper';
 
 export function TagCloudSkeleton() {

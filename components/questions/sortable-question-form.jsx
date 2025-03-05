@@ -22,7 +22,7 @@ export function SortableQuestionForm({
   onChange,
   onRemove,
 }) {
-  // Use our custom hooks
+  
   const {
     touched,
     optionsTouched,
@@ -40,7 +40,7 @@ export function SortableQuestionForm({
       markOptionAsTouched,
     });
 
-  // Set up event listeners
+  
   useQuestionFormEvents({
     id,
     type,
@@ -49,7 +49,7 @@ export function SortableQuestionForm({
     markAllOptionsTouched,
   });
 
-  // DnD sortable logic
+  
   const {
     attributes,
     listeners,
@@ -101,7 +101,7 @@ export function SortableQuestionForm({
           </FormControl>
         </FormItem>
 
-        {/* Checkbox Options (only for CHECKBOX type) */}
+        {}
         {type === QUESTION_TYPES.CHECKBOX && initialData.options && (
           <QuestionOptions
             options={initialData.options}

@@ -1,4 +1,4 @@
-// hooks/use-form-fields.jsx
+
 'use client';
 
 import { Input } from '@/components/ui/input';
@@ -24,16 +24,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-/**
- * Custom hook that provides standardized form field components
- * for template creation and editing forms
- * @param {Object} options Configuration options
- * @returns {Object} Form field rendering functions
- */
+
 export function useFormFields() {
-  /**
-   * Renders a text input field with consistent styling
-   */
+  
   const renderTextField = ({
     control,
     name,
@@ -67,9 +60,7 @@ export function useFormFields() {
     );
   };
 
-  /**
-   * Renders a topic selection field with predefined topics
-   */
+  
   const renderTopicField = ({ control, disabled }) => {
     return (
       <FormField
@@ -103,9 +94,7 @@ export function useFormFields() {
     );
   };
 
-  /**
-   * Renders a tags input field
-   */
+  
   const renderTagsField = ({ control, disabled }) => {
     return (
       <FormField
@@ -131,9 +120,7 @@ export function useFormFields() {
     );
   };
 
-  /**
-   * Renders a public/private toggle switch
-   */
+  
   const renderVisibilityField = ({ control, disabled }) => {
     return (
       <FormField
@@ -155,9 +142,7 @@ export function useFormFields() {
     );
   };
 
-  /**
-   * Renders the allowed users field (conditionally)
-   */
+  
   const renderAllowedUsersField = ({ control, disabled, isPublic }) => {
     if (isPublic) return null;
 
@@ -185,9 +170,7 @@ export function useFormFields() {
     );
   };
 
-  /**
-   * Renders an image upload field
-   */
+  
   const renderImageField = ({ control, disabled, onUploadingChange }) => {
     return (
       <FormField

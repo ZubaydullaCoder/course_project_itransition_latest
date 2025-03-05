@@ -9,7 +9,7 @@ export default async function TemplatePage({ params, searchParams }) {
   const { templateId } = await params;
   const session = await auth();
 
-  // If no session but has a special parameter, show a loading state instead of 404
+  
   if (!session?.user && searchParams.initialLoad === 'true') {
     return <TemplatePageClientFallback templateId={templateId} />;
   }
@@ -22,7 +22,7 @@ export default async function TemplatePage({ params, searchParams }) {
 
   const userResponse = template.responses?.[0];
 
-  // Define breadcrumb items for this page
+  
   const breadcrumbItems = [
     { href: '/', label: 'Home' },
     { href: '/templates', label: 'Templates' },

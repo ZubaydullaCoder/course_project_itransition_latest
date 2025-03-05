@@ -1,4 +1,4 @@
-// components/templates/template-filters-skeleton.jsx
+
 import { SkeletonWrapper } from '@/components/ui/skeleton-wrapper';
 
 export function TemplateFiltersSkeleton() {

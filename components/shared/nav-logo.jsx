@@ -1,4 +1,4 @@
-// components/shared/nav-logo.jsx
+
 import Link from 'next/link';
 
 export function NavLogo() {

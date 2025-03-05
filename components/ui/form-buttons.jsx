@@ -1,12 +1,10 @@
-// components/ui/form-buttons.jsx
+
 'use client';
 
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 
-/**
- * Reusable submit button with loading state
- */
+
 export function SubmitButton({
   isSubmitting,
   isDisabled,
@@ -16,10 +14,10 @@ export function SubmitButton({
   icon: Icon,
   hasChanges,
   className = '',
-  variant = 'default', // Add variant prop with default value
+  variant = 'default', 
   ...props
 }) {
-  // Determine the current button state and text to display
+  
   const getButtonContent = () => {
     if (isSubmitting) {
       return (
@@ -59,9 +57,7 @@ export function SubmitButton({
   );
 }
 
-/**
- * Reusable cancel button for forms
- */
+
 export function CancelButton({
   onClick,
   isDisabled,
@@ -98,8 +94,8 @@ export function FormActions({
   noChangesText,
   submittingText,
   className = 'flex justify-end gap-4',
-  submitButtonClassName = 'min-w-[120px]', // Extract submit button class
-  submitButtonVariant = 'default', // Add variant prop with default value
+  submitButtonClassName = 'min-w-[120px]', 
+  submitButtonVariant = 'default', 
   ...props
 }) {
   return (

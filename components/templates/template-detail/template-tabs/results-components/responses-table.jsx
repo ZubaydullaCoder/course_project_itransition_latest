@@ -54,11 +54,11 @@ export function ResponsesTable({
     );
   };
 
-  // Sort responses
+  
   const sortedResponses = [...responses].sort((a, b) => {
     const { column, direction } = sorting;
 
-    // For user name sorting
+    
     if (column === 'user') {
       const nameA = a.user?.name || '';
       const nameB = b.user?.name || '';
@@ -67,14 +67,14 @@ export function ResponsesTable({
         : nameB.localeCompare(nameA);
     }
 
-    // For dates
+    
     if (column === 'createdAt' || column === 'updatedAt') {
       const dateA = new Date(a[column]);
       const dateB = new Date(b[column]);
       return direction === 'asc' ? dateA - dateB : dateB - dateA;
     }
 
-    // For status
+    
     if (column === 'status') {
       const statusA = a.updatedAt !== a.createdAt ? 'Updated' : 'Submitted';
       const statusB = b.updatedAt !== b.createdAt ? 'Updated' : 'Submitted';

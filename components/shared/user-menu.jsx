@@ -1,4 +1,4 @@
-// components/shared/user-menu.jsx
+
 import { UserIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenuWrapper } from '@/components/ui/dropdown-menu-wrapper';

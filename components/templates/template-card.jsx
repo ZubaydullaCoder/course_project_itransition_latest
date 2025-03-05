@@ -51,7 +51,7 @@ import { useTemplateActions } from '@/hooks/use-template-actions';
 export function TemplateCard({ template, isOwner, isAdmin }) {
   const hasSubmitted = template.responses && template.responses.length > 0;
 
-  // Use the template actions hook
+  
   const {
     showDeleteDialog,
     setShowDeleteDialog,

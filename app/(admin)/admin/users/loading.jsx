@@ -1,10 +1,10 @@
-// app/(admin)/admin/users/loading.jsx
+
 import { PageSkeleton } from '@/components/ui/page-skeleton';
 import { Card } from '@/components/ui/card';
 import { SkeletonWrapper } from '@/components/ui/skeleton-wrapper';
 
 export default function AdminUsersLoadingPage() {
-  // Define breadcrumb items for this page
+  
   const breadcrumbItems = [
     { href: '/', label: 'Home' },
     { href: '/admin', label: 'Admin' },
@@ -18,21 +18,21 @@ export default function AdminUsersLoadingPage() {
       description="Manage user accounts and permissions"
     >
       <Card>
-        {/* Table toolbar */}
+        {}
         <div className="flex items-center justify-between p-4 border-b">
-          {/* Search input */}
+          {}
           <div className="flex items-center gap-2">
             <SkeletonWrapper width={240} height={40} />
           </div>
 
-          {/* Filters */}
+          {}
           <div className="flex items-center gap-2">
             <SkeletonWrapper width={120} height={40} />
             <SkeletonWrapper width={44} height={40} className="rounded-md" />
           </div>
         </div>
 
-        {/* Table header */}
+        {}
         <div className="border-b">
           <div className="grid grid-cols-5 px-4 py-3">
             <SkeletonWrapper variant="text" width="60%" />
@@ -43,7 +43,7 @@ export default function AdminUsersLoadingPage() {
           </div>
         </div>
 
-        {/* Table rows */}
+        {}
         {Array(10)
           .fill(null)
           .map((_, index) => (
@@ -96,7 +96,7 @@ export default function AdminUsersLoadingPage() {
             </div>
           ))}
 
-        {/* Table pagination */}
+        {}
         <div className="flex items-center justify-between px-4 py-4 border-t">
           <SkeletonWrapper width={140} height={20} />
           <div className="flex items-center gap-1">

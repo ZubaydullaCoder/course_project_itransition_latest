@@ -14,7 +14,7 @@ import { QUESTION_TYPES } from '@/lib/constants/questions';
 export function TemplateEditForm({ template }) {
   const router = useRouter();
 
-  // Use our template form hook with edit mode settings
+  
   const {
     form,
     questions,
@@ -32,7 +32,7 @@ export function TemplateEditForm({ template }) {
     isEdit: true,
   });
 
-  // Use our form fields hook
+  
   const {
     renderTextField,
     renderTopicField,
@@ -42,15 +42,15 @@ export function TemplateEditForm({ template }) {
     renderImageField,
   } = useFormFields();
 
-  // Get the current state of isPublic field
+  
   const isPublic = form.watch('isPublic');
 
-  // Add this function to the TemplateEditForm component
+  
   const checkAndSubmit = async () => {
-    // First validate the form fields with React Hook Form
+    
     const isFormValid = await form.trigger();
 
-    // Then manually check all checkbox questions options
+    
     let allQuestionsValid = true;
     const invalidQuestions = [];
 
@@ -112,7 +112,7 @@ export function TemplateEditForm({ template }) {
               </p>
             </div>
 
-            {/* Title field */}
+            {}
             {renderTextField({
               control: form.control,
               name: 'title',
@@ -121,7 +121,7 @@ export function TemplateEditForm({ template }) {
               disabled: isDisabled,
             })}
 
-            {/* Description field */}
+            {}
             {renderTextField({
               control: form.control,
               name: 'description',
@@ -131,32 +131,32 @@ export function TemplateEditForm({ template }) {
               disabled: isDisabled,
             })}
 
-            {/* Topic field */}
+            {}
             {renderTopicField({
               control: form.control,
               disabled: isDisabled,
             })}
 
-            {/* Tags field */}
+            {}
             {renderTagsField({
               control: form.control,
               disabled: isDisabled,
             })}
 
-            {/* Visibility field */}
+            {}
             {renderVisibilityField({
               control: form.control,
               disabled: isDisabled,
             })}
 
-            {/* Allowed users field */}
+            {}
             {renderAllowedUsersField({
               control: form.control,
               disabled: isDisabled,
               isPublic,
             })}
 
-            {/* Image field */}
+            {}
             {renderImageField({
               control: form.control,
               disabled: isDisabled,

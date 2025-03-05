@@ -51,11 +51,11 @@ export function TemplateResultsTab({ templateId }) {
   };
 
   const handleDeleteSuccess = (deletedId) => {
-    // Remove the deleted response from state
+    
     const updatedResponses = responses.filter((r) => r.id !== deletedId);
     setResponses(updatedResponses);
 
-    // Update aggregated data with filtered responses
+    
     processAggregatedData(updatedResponses);
 
     toast({
@@ -71,7 +71,7 @@ export function TemplateResultsTab({ templateId }) {
     }
 
     try {
-      // Use the simplified aggregation logic
+      
       const aggregated = aggregateResponseData(responseData);
       setAggregatedData(aggregated);
     } catch (error) {
@@ -84,7 +84,7 @@ export function TemplateResultsTab({ templateId }) {
 
   return (
     <div className="space-y-6">
-      {/* Responses Table Component */}
+      {}
       <ResponsesTable
         responses={responses}
         isLoading={isLoading}
@@ -96,14 +96,14 @@ export function TemplateResultsTab({ templateId }) {
 
       <Separator />
 
-      {/* Response Summary Component */}
+      {}
       <ResponseSummary
         aggregatedData={aggregatedData}
         responseCount={responses.length}
         isLoading={isLoading}
       />
 
-      {/* Response Details Modal */}
+      {}
       <ResponseDetailsModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -111,7 +111,7 @@ export function TemplateResultsTab({ templateId }) {
         templateId={templateId}
       />
 
-      {/* Delete Response Dialog */}
+      {}
       <DeleteResponseDialog
         responseToDelete={responseToDelete}
         onClose={() => setResponseToDelete(null)}
@@ -121,16 +121,16 @@ export function TemplateResultsTab({ templateId }) {
   );
 }
 
-// Helper function to aggregate response data - simplified version
+
 function aggregateResponseData(responses) {
-  // If there are no responses, return empty object
+  
   if (!responses || responses.length === 0) {
     return {};
   }
 
   const aggregated = {};
 
-  // Process all responses to build the aggregated data
+  
   responses.forEach((response) => {
     if (!response.answers) return;
 
@@ -138,7 +138,7 @@ function aggregateResponseData(responses) {
       const questionId = answer.questionId;
       if (!questionId) return;
 
-      // Initialize the question data structure if it doesn't exist yet
+      
       if (!aggregated[questionId]) {
         aggregated[questionId] = {
           questionText: answer.question?.text || 'Unknown Question',
@@ -148,22 +148,22 @@ function aggregateResponseData(responses) {
         };
       }
 
-      // Add this answer's value to the collection
+      
       if (answer.value !== null && answer.value !== undefined) {
         aggregated[questionId].values.push(answer.value);
       }
     });
   });
 
-  // Calculate aggregations for each question type
+  
   Object.keys(aggregated).forEach((questionId) => {
     const question = aggregated[questionId];
     const values = question.values;
     const type = question.type?.toLowerCase();
 
-    // Handle number/integer questions
+    
     if (type === 'integer' || type === 'number') {
-      // Existing number logic...
+      
       const numericValues = values
         .map((v) => {
           if (v === '' || v === null) return 0;
@@ -182,7 +182,7 @@ function aggregateResponseData(responses) {
       type === 'single_line' ||
       type === 'multi_line'
     ) {
-      // Existing text logic...
+      
       const frequencies = {};
       values.forEach((value) => {
         if (value && value.trim() !== '') {
@@ -207,19 +207,19 @@ function aggregateResponseData(responses) {
     }
     // Handle checkbox questions
     else if (type === 'checkbox') {
-      // Initialize counts for each option
+      
       const optionCounts = new Array(question.options.length).fill(0);
       let totalSelections = 0;
 
-      // Process each response
+      
       values.forEach((value) => {
-        if (!value) return; // Skip empty values
+        if (!value) return; 
 
         try {
-          // Parse the JSON string to get selected indices
+          
           const selectedIndices = JSON.parse(value);
 
-          // Count each selected option
+          
           if (Array.isArray(selectedIndices)) {
             selectedIndices.forEach((index) => {
               if (index >= 0 && index < optionCounts.length) {
@@ -229,24 +229,24 @@ function aggregateResponseData(responses) {
             });
           }
         } catch (e) {
-          // Handle parsing errors (malformed JSON)
+          
           console.error('Error parsing checkbox value:', e);
         }
       });
 
-      // Calculate selection percentages
+      
       const totalResponses = values.filter((v) => v).length;
       const optionStats = question.options.map((option, index) => ({
         text: option,
-        count: optionCounts[index] || 0, // Ensure we have a value
+        count: optionCounts[index] || 0, 
         percentage:
           totalResponses > 0 ? (optionCounts[index] / totalResponses) * 100 : 0,
       }));
 
-      // Sort by count descending
+      
       const sortedOptions = [...optionStats].sort((a, b) => b.count - a.count);
 
-      // Store the aggregated data
+      
       question.optionStats = optionStats;
       question.mostSelected = sortedOptions[0] || null;
       question.totalResponses = totalResponses;

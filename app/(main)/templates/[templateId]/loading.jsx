@@ -1,4 +1,4 @@
-// app/(main)/templates/[templateId]/loading.jsx
+
 import { PageSkeleton } from '@/components/ui/page-skeleton';
 import { SkeletonWrapper } from '@/components/ui/skeleton-wrapper';
 import { Separator } from '@/components/ui/separator';
@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 
 export default function TemplatePageLoading() {
-  // Define breadcrumb items for this page with a skeleton for the template title
+  
   const breadcrumbItems = [
     { href: '/', label: 'Home' },
     { href: '/templates', label: 'Templates' },
@@ -16,13 +16,13 @@ export default function TemplatePageLoading() {
   return (
     <PageSkeleton breadcrumbItems={breadcrumbItems} maxWidth="3xl">
       <div className="space-y-4">
-        {/* Title and Description */}
+        {}
         <div>
           <SkeletonWrapper variant="title" height={32} className="mb-2" />
           <SkeletonWrapper variant="text" width="90%" />
         </div>
 
-        {/* Tabs */}
+        {}
         <Tabs defaultValue="preview" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="preview" className="cursor-default">
@@ -36,9 +36,9 @@ export default function TemplatePageLoading() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Preview Tab Content */}
+          {}
           <TabsContent value="preview" className="mt-4 space-y-4">
-            {/* Form Header */}
+            {}
             <Card>
               <CardContent className="p-6">
                 <div className="space-y-4">
@@ -51,7 +51,7 @@ export default function TemplatePageLoading() {
               </CardContent>
             </Card>
 
-            {/* Questions */}
+            {}
             {Array(3)
               .fill(null)
               .map((_, i) => (
@@ -66,13 +66,13 @@ export default function TemplatePageLoading() {
                         <SkeletonWrapper width={24} height={24} />
                       </div>
 
-                      {/* Input field or options */}
+                      {}
                       <div className="pt-2">
                         {i % 2 === 0 ? (
-                          // Text input skeleton
+                          
                           <SkeletonWrapper height={40} />
                         ) : (
-                          // Options skeleton
+                          
                           <div className="space-y-3">
                             {Array(3)
                               .fill(null)
@@ -97,19 +97,19 @@ export default function TemplatePageLoading() {
                 </Card>
               ))}
 
-            {/* Submit Button */}
+            {}
             <div className="flex justify-end mt-6">
               <SkeletonWrapper width={120} height={40} />
             </div>
           </TabsContent>
 
-          {/* Hidden Content for Other Tabs - They will be shown on actual tab selection */}
+          {}
           <TabsContent value="responses" className="hidden">
-            {/* Content is hidden during loading */}
+            {}
           </TabsContent>
 
           <TabsContent value="settings" className="hidden">
-            {/* Content is hidden during loading */}
+            {}
           </TabsContent>
         </Tabs>
       </div>

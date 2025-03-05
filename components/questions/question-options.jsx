@@ -1,4 +1,4 @@
-// components/questions/question-options.jsx
+
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { FormMessage } from '@/components/ui/form';

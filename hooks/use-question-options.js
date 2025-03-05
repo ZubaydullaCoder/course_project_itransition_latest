@@ -1,4 +1,4 @@
-// hooks/use-question-options.js
+
 'use client';
 
 import { useEffect } from 'react';
@@ -10,7 +10,7 @@ export function useQuestionOptions({
   onChange,
   markOptionAsTouched,
 }) {
-  // Initialize options if not present
+  
   useEffect(() => {
     if (
       type === QUESTION_TYPES.CHECKBOX &&
@@ -41,7 +41,7 @@ export function useQuestionOptions({
       onChange({ options: newOptions });
 
       // If the option becomes empty after trimming when it wasn't before,
-      // mark it as touched to show validation error immediately
+      
       if (value.trim() === '' && initialData.options[index]?.trim() !== '') {
         markOptionAsTouched(index);
       }

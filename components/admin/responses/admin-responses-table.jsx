@@ -110,7 +110,7 @@ export function AdminResponsesTable({ initialResponses }) {
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem
                         onClick={() =>
-                          // Navigate to overview tab
+                          
                           router.push(
                             `/templates/${response.templateId}?tab=overview`
                           )
@@ -121,7 +121,7 @@ export function AdminResponsesTable({ initialResponses }) {
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() =>
-                          // Navigate to myResponse tab
+                          
                           router.push(
                             `/templates/${response.templateId}?tab=myResponse&responseId=${response.id}`
                           )

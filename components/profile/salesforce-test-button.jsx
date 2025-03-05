@@ -1,4 +1,4 @@
-// components/profile/salesforce-test-button.jsx
+
 'use client';
 
 import { useState } from 'react';
@@ -14,7 +14,7 @@ export function SalesforceTestButton() {
   const testSalesforceAuth = async () => {
     setIsLoading(true);
     try {
-      // Call the auth endpoint
+      
       const response = await fetch('/api/salesforce/auth');
 
       if (!response.ok) {
@@ -24,11 +24,11 @@ export function SalesforceTestButton() {
       const data = await response.json();
 
       if (data.authUrl) {
-        // Show the URL for debugging
+        
         setDebugInfo(data.authUrl);
         console.log('Salesforce Auth URL:', data.authUrl);
 
-        // Open the authorization URL
+        
         window.open(data.authUrl, '_blank');
 
         toast({

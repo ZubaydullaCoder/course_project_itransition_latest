@@ -16,19 +16,19 @@ export default async function ProfilePage({ searchParams }) {
     return redirect('/auth/signin');
   }
 
-  // Check if admin is viewing another user's profile
-  // Fix: Correctly extract userId from searchParams
+  
+  
   const { userId } = await searchParams;
   let profileUser = session.user;
   let isAdminView = false;
 
   if (userId && userId !== session.user.id) {
-    // Only admins can view other users' profiles
+    
     if (session.user.role !== 'ADMIN') {
       return redirect('/profile');
     }
 
-    // Get the requested user data
+    
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -49,7 +49,7 @@ export default async function ProfilePage({ searchParams }) {
     isAdminView = true;
   }
 
-  // Define breadcrumb items for this page
+  
   const breadcrumbItems = isAdminView
     ? [
         { href: '/', label: 'Home' },

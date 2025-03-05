@@ -1,4 +1,4 @@
-// app/(main)/loading.jsx
+
 import { PageSkeleton } from '@/components/ui/page-skeleton';
 import { TemplateCarouselSkeleton } from '@/components/home/templates/template-carousel-skeleton';
 import { TagCloudSkeleton } from '@/components/home/tag-cloud-skeleton';
@@ -17,13 +17,13 @@ export default function HomePageLoading() {
     >
       <div className="text-center space-y-2 mb-6">
         {' '}
-        {/* Added mb-6 to match spacing */}
+        {}
         <h1 className="text-4xl font-bold">Welcome to Forms App</h1>
         <div className="flex justify-center pt-1">
           {' '}
-          {/* Added pt-1 for better alignment */}
+          {}
           <SkeletonWrapper width={300} height={26} />{' '}
-          {/* Adjusted height from 24 to 26 */}
+          {}
         </div>
       </div>
 

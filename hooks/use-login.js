@@ -1,4 +1,4 @@
-// hooks/use-login.js
+
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -8,17 +8,14 @@ import { signIn, useSession } from 'next-auth/react';
 import { LoginSchema } from '@/lib/utils/validators';
 import { useFormSubmission } from '@/hooks/use-form-submission';
 
-/**
- * Custom hook for managing login form state and submission
- * @returns {Object} Login form utilities and state
- */
+
 export function useLogin() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { update } = useSession();
   const queryReturnTo = searchParams.get('returnTo');
 
-  // Initialize form with validation
+  
   const form = useForm({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -31,10 +28,10 @@ export function useLogin() {
   const { isSubmitting, handleSubmit } = useFormSubmission();
 
   const isValidReturnUrl = (url) => {
-    return url && url.startsWith('/') && !url.startsWith('//');
+    return url && url.startsWith('/') && !url.startsWith('
   };
 
-  // Login submission handler
+  
   const onSubmit = async (data) => {
     const loginUser = async (credentials) => {
       const result = await signIn('credentials', {
@@ -54,11 +51,11 @@ export function useLogin() {
       return { success: true };
     };
 
-    // Handle submission with our custom hook
+    
     await handleSubmit(loginUser, data, {
       customSuccessMessage: 'You have successfully logged in.',
       onSuccess: async () => {
-        // Redirect logic
+        
         await update();
         await new Promise((resolve) => setTimeout(resolve, 500));
 

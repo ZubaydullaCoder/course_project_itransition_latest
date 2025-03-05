@@ -48,12 +48,12 @@ export function UserProfilePage({ user, isAdminView = false }) {
     });
   };
 
-  // Check if current user can access Salesforce integration
-  // (only the user themselves or admins)
+  
+  
   const canAccessSalesforce =
     session?.user?.id === user.id || session?.user?.role === 'ADMIN';
 
-  // Add a back button for admin view
+  
   const backToUsersManagement = () => {
     router.push('/admin/users');
   };
@@ -75,7 +75,7 @@ export function UserProfilePage({ user, isAdminView = false }) {
 
       <div className="flex items-center space-x-4">
         <Avatar className="h-16 w-16">
-          {/* Use optional chaining since image might not exist */}
+          {}
           <AvatarImage src={user?.image} alt={user.name || 'User'} />
           <AvatarFallback>{user.name?.[0] || 'U'}</AvatarFallback>
         </Avatar>
@@ -159,7 +159,7 @@ export function UserProfilePage({ user, isAdminView = false }) {
                       </p>
                     </div>
                     <div className="flex space-x-2">
-                      <SalesforceTestButton /> {/* Add the test button here */}
+                      <SalesforceTestButton /> {}
                       <Button
                         onClick={() => setShowSalesforceForm(true)}
                         variant="outline"

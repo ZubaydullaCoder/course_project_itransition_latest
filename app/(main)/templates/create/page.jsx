@@ -2,7 +2,7 @@ import { TemplateCreateForm } from '@/components/templates/template-create/templ
 import { PageContainer } from '@/components/layout/page-container';
 
 export default function CreateTemplatePage() {
-  // Define breadcrumb items for this page
+  
   const breadcrumbItems = [
     { href: '/', label: 'Home' },
     { href: '/templates', label: 'Templates' },

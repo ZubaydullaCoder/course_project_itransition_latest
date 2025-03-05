@@ -32,17 +32,17 @@ export function MyResponseForm({ template, response }) {
           (a) => a.questionId === question.id
         );
 
-        // Handle checkbox questions with multiple options
+        
         if (question.type === QUESTION_TYPES.CHECKBOX) {
           if (question.options && question.options.length >= 2) {
-            // For multi-option checkboxes, ensure we have a valid JSON array or empty array
+            
             acc[question.id] = answer?.value || '[]';
           } else {
-            // For legacy single checkboxes
+            
             acc[question.id] = answer?.value || 'false';
           }
         } else {
-          // For other question types
+          
           acc[question.id] = answer?.value || '';
         }
       } else {
@@ -66,14 +66,14 @@ export function MyResponseForm({ template, response }) {
 
   const formValues = form.watch();
 
-  // Using our custom hook for form state management
+  
   const { hasChanges } = useFormState({
     initialValues: originalValues,
     currentValues: formValues,
     options: {
-      // For non-edit mode, don't show changes
+      
       compareNormalized: isEditMode,
-      // For new responses (no existing response), consider any non-empty value as a change
+      
       deepCompare: !!response,
     },
   });
@@ -85,7 +85,7 @@ export function MyResponseForm({ template, response }) {
           (a) => a.questionId === question.id
         );
 
-        // Preserve the same format as in the form default values
+        
         if (question.type === QUESTION_TYPES.CHECKBOX) {
           if (question.options && question.options.length >= 2) {
             acc[question.id] = answer?.value || '[]';
@@ -164,7 +164,7 @@ export function MyResponseForm({ template, response }) {
     }
   };
 
-  // Determine if inputs should be disabled
+  
   const areInputsDisabled = !isEditMode || isSubmitting;
 
   return (

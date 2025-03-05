@@ -1,4 +1,4 @@
-// hooks/use-drag-sensors.js
+
 'use client';
 
 import {
@@ -9,11 +9,7 @@ import {
 } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 
-/**
- * Custom hook for configuring DnD sensors
- *
- * @returns {Object} Configured sensors for DnD
- */
+
 export function useDragSensors() {
   return useSensors(
     useSensor(PointerSensor),

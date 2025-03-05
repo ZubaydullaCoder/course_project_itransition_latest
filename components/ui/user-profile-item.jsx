@@ -1,12 +1,7 @@
-// components/ui/user-profile-item.jsx
+
 import { MenuLink } from './menu-link';
 
-/**
- * User profile information menu item
- *
- * @param {Object} props - Component props
- * @param {Object} props.user - User object with name, email, and role
- */
+
 export function UserProfileItem({ user }) {
   return (
     <MenuLink href="/profile">

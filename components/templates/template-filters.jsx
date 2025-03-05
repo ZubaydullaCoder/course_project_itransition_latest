@@ -21,15 +21,15 @@ export function TemplateFilters({
   currentStatus,
   currentSort = DEFAULT_SORT,
 }) {
-  // Use the custom hooks for each filter type
+  
   const filter = useOptimisticFilter(currentFilter, 'filter');
   const topic = useOptimisticFilter(currentTopic, 'topic');
   const sort = useOptimisticFilter(currentSort, 'sort', {
-    preventToggle: true, // Sort should always have a value
+    preventToggle: true, 
   });
   const status = useOptimisticFilter(currentStatus, 'status');
 
-  // For tag which has a different toggle behavior
+  
   const { toggleParam } = useQueryParams({ baseUrl: '/templates' });
 
   const handleTagClick = (tag) => {
@@ -39,7 +39,7 @@ export function TemplateFilters({
   return (
     <div className="rounded-lg border bg-card sticky top-6">
       <div className="space-y-4 p-4">
-        {/* View Filters */}
+        {}
         <div>
           <h3 className="mb-2 text-sm font-medium tracking-tight">View</h3>
           <div className="flex flex-wrap gap-2">
@@ -60,7 +60,7 @@ export function TemplateFilters({
 
         <Separator />
 
-        {/* Status Filters */}
+        {}
         <div>
           <h3 className="mb-2 text-sm font-medium tracking-tight">Status</h3>
           <div className="flex flex-wrap gap-2">
@@ -83,7 +83,7 @@ export function TemplateFilters({
 
         <Separator />
 
-        {/* Sort Filters */}
+        {}
         <div>
           <h3 className="mb-2 text-sm font-medium tracking-tight">Sort By</h3>
           <div className="flex flex-wrap gap-2">
@@ -104,7 +104,7 @@ export function TemplateFilters({
 
         <Separator />
 
-        {/* Topics */}
+        {}
         <div>
           <h3 className="mb-2 text-sm font-medium tracking-tight">Topics</h3>
           <ScrollArea className="w-full whitespace-nowrap">
@@ -125,7 +125,7 @@ export function TemplateFilters({
           </ScrollArea>
         </div>
 
-        {/* Active Filters */}
+        {}
         {(filter.isActive ||
           topic.isActive ||
           currentTag ||

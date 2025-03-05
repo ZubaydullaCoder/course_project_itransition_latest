@@ -6,7 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { MultipleCheckboxSummary } from './question-summaries/multiple-checkbox-summary';
 
 export function ResponseSummary({ aggregatedData, responseCount, isLoading }) {
-  // Helper function to check question types in a case-insensitive way
+  
   const isNumberType = (type) => {
     if (!type) return false;
     const lowerType = type.toLowerCase();
@@ -66,7 +66,7 @@ export function ResponseSummary({ aggregatedData, responseCount, isLoading }) {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  {/* NUMBER/INTEGER type question */}
+                  {}
                   {isNumberType(question.type) && (
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div className="p-4 rounded-lg bg-muted flex flex-col items-center justify-center">
@@ -92,7 +92,7 @@ export function ResponseSummary({ aggregatedData, responseCount, isLoading }) {
                     </div>
                   )}
 
-                  {/* TEXT or TEXTAREA type question */}
+                  {}
                   {isTextType(question.type) && (
                     <div className="bg-muted p-4 rounded-lg">
                       <p className="text-sm text-muted-foreground">
@@ -142,7 +142,7 @@ export function ResponseSummary({ aggregatedData, responseCount, isLoading }) {
                     </div>
                   )}
 
-                  {/* CHECKBOX type question */}
+                  {}
                   {isCheckboxType(question.type) && (
                     <MultipleCheckboxSummary data={question} />
                   )}

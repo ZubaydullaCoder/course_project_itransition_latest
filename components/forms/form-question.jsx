@@ -24,7 +24,7 @@ export function FormQuestion({ question, control, disabled = false }) {
       case QUESTION_TYPES.INTEGER:
         return <Input {...field} type="number" disabled={disabled} />;
       case QUESTION_TYPES.CHECKBOX:
-        // Handle checkbox questions with multiple options
+        
         if (question.options && question.options.length >= 2) {
           const selectedValues = field.value ? JSON.parse(field.value) : [];
 

@@ -1,4 +1,4 @@
-// components/shared/main-nav.jsx
+
 'use client';
 
 import Link from 'next/link';

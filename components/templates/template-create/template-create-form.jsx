@@ -36,10 +36,10 @@ export function TemplateCreateForm() {
   const isPublic = form.watch('isPublic');
 
   const checkAndSubmit = async () => {
-    // First validate the form fields with React Hook Form
+    
     const isFormValid = await form.trigger();
 
-    // Then manually check all checkbox questions options
+    
     let allQuestionsValid = true;
     const invalidQuestions = [];
 
@@ -56,24 +56,24 @@ export function TemplateCreateForm() {
         }
       }
 
-      // Also check for empty titles
+      
       if (!question.text?.trim()) {
         allQuestionsValid = false;
         invalidQuestions.push(question.id);
       }
     });
 
-    // Only submit if both validations pass
+    
     if (isFormValid && allQuestionsValid) {
       return handleSubmit();
     } else {
-      // Mark all fields as touched
+      
       form.trigger();
 
-      // Mark question titles and options as touched
-      // This will dispatch a custom event that SortableQuestionForm components can listen for
+      
+      
       if (invalidQuestions.length > 0) {
-        // Create and dispatch a custom event
+        
         const event = new CustomEvent('markQuestionsAsTouched', {
           detail: { questionIds: invalidQuestions },
         });

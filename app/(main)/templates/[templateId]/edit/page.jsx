@@ -11,7 +11,7 @@ export default async function EditTemplatePage({ params }) {
     notFound();
   }
 
-  // Define breadcrumb items for this page
+  
   const breadcrumbItems = [
     { href: '/', label: 'Home' },
     { href: '/templates', label: 'Templates' },

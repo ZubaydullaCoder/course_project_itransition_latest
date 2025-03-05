@@ -1,4 +1,4 @@
-// components/templates/templates-list-skeleton.jsx
+
 'use client';
 
 import { TemplateCardSkeleton } from '@/components/templates/template-card-skeleton';

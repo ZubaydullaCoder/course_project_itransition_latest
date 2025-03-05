@@ -39,7 +39,7 @@ export function UserTemplatesTable() {
     direction: 'desc',
   });
 
-  // Comment: Removed unused templateActions variable since we're using direct Links instead
+  
 
   useEffect(() => {
     async function loadTemplates() {
@@ -77,7 +77,7 @@ export function UserTemplatesTable() {
     });
   };
 
-  // Handle sorting
+  
   const handleSort = (column) => {
     setSorting((prev) => ({
       column,
@@ -86,11 +86,11 @@ export function UserTemplatesTable() {
     }));
   };
 
-  // Sort templates
+  
   const sortedTemplates = [...templates].sort((a, b) => {
     const { column, direction } = sorting;
 
-    // Sorting logic remains unchanged
+    
     if (column === 'title') {
       return direction === 'asc'
         ? a.title.localeCompare(b.title)
@@ -120,7 +120,7 @@ export function UserTemplatesTable() {
     return 0;
   });
 
-  // Helper for sort indicator
+  
   const getSortIcon = (column) => {
     if (sorting.column !== column)
       return <ArrowUpDown className="h-4 w-4 ml-1" />;
@@ -144,7 +144,7 @@ export function UserTemplatesTable() {
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          // Loading skeleton remains unchanged
+          
           <div className="rounded-md border">
             <Table>
               <TableHeader>
@@ -251,7 +251,7 @@ export function UserTemplatesTable() {
               </TableHeader>
               <TableBody>
                 {sortedTemplates.map((template) => {
-                  // We're directly using Links instead of the actions object
+                  
 
                   return (
                     <TableRow key={template.id}>

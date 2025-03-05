@@ -1,10 +1,10 @@
-// components/shared/search-and-filter.jsx
+
 import { GlobalSearch } from '@/components/shared/global-search';
 import { SelectMenu } from '@/components/ui/select-menu';
 import { TEMPLATE_TOPICS } from '@/lib/constants/templates';
 
 export function SearchAndFilter({ currentTopic, handleTopicChange }) {
-  // Format topics for the SelectMenu component
+  
   const topicOptions = [
     { value: 'all', label: 'All Topics' },
     ...TEMPLATE_TOPICS.map((topic) => ({ value: topic, label: topic })),

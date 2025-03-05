@@ -1,4 +1,4 @@
-// hooks/use-question-form-events.js
+
 'use client';
 
 import { useEffect } from 'react';
@@ -15,20 +15,20 @@ export function useQuestionFormEvents({
     const handleMarkAsTouched = (event) => {
       const { questionIds } = event.detail;
       if (questionIds.includes(id)) {
-        // Mark the title as touched
+        
         setTouched(true);
 
-        // Mark all options as touched for checkbox questions
+        
         if (type === QUESTION_TYPES.CHECKBOX && initialData.options) {
           markAllOptionsTouched(initialData.options.length);
         }
       }
     };
 
-    // Add event listener
+    
     document.addEventListener('markQuestionsAsTouched', handleMarkAsTouched);
 
-    // Cleanup
+    
     return () => {
       document.removeEventListener(
         'markQuestionsAsTouched',

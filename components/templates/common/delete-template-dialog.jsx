@@ -15,13 +15,13 @@ import { useTemplateActions } from '@/hooks/use-template-actions';
 import { Loader2 } from 'lucide-react';
 
 export function DeleteTemplateDialog({ isOpen, template, onClose, onSuccess }) {
-  // Use the template actions hook with custom configuration
+  
   const { isDeleting, handleDelete } = useTemplateActions({
     template,
-    onSuccessDelete: onSuccess, // Pass the success callback
+    onSuccessDelete: onSuccess, 
     deleteAction: async (templateId) => {
-      // We're using the default deleteTemplate function from the hook
-      // but wrapping it to handle the dialog closing
+      
+      
       const result = await import('@/lib/actions/template-actions').then(
         (mod) => mod.deleteTemplate(templateId)
       );
@@ -30,7 +30,7 @@ export function DeleteTemplateDialog({ isOpen, template, onClose, onSuccess }) {
       }
       return result;
     },
-    shouldRefreshAfterDelete: false, // Let the parent component handle updates
+    shouldRefreshAfterDelete: false, 
   });
 
   if (!template) return null;

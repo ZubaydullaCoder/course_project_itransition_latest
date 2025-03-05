@@ -1,4 +1,4 @@
-// components/shared/user-menu-content.jsx
+
 import Link from 'next/link';
 import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { MenuLink } from '@/components/ui/menu-link';

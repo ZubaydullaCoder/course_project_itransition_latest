@@ -1,16 +1,10 @@
-// hooks/use-optimistic-ui.jsx
+
 'use client';
 
 import { useState, useTransition, useOptimistic } from 'react';
 import { useQueryParams } from '@/hooks/use-query-params';
 
-/**
- * Hook for managing UI state with optimistic updates tied to URL parameters
- * @param {string} initialValue - Initial value
- * @param {string} paramName - URL parameter name
- * @param {Object} options - Additional options
- * @returns {Object} State and handlers for optimistic UI updates
- */
+
 export function useOptimisticUI(initialValue, paramName, options = {}) {
   const {
     baseUrl = '/templates',

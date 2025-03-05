@@ -11,7 +11,7 @@ import { useQuestionManager } from '@/hooks/use-question-manager';
 import { useDragSensors } from '@/hooks/use-drag-sensors';
 
 export function QuestionsSection({ value = [], onChange, disabled = false }) {
-  // Use our custom hooks
+  
   const {
     questions,
     questionCounts,

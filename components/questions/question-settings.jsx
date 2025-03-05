@@ -1,4 +1,4 @@
-// components/questions/question-settings.jsx
+
 import { Switch } from '@/components/ui/switch';
 
 export function QuestionSettings({

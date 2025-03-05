@@ -22,7 +22,7 @@ import Link from 'next/link';
 import { useTemplateActions } from '@/hooks/use-template-actions';
 
 export function TemplateActions({ template }) {
-  // Use the template actions hook
+  
   const {
     showDeleteDialog,
     setShowDeleteDialog,

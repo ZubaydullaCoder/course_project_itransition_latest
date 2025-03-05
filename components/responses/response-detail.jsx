@@ -11,7 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { getResponseDetails } from '@/lib/actions/form-actions';
 import { Badge } from '@/components/ui/badge';
 import { useSession } from 'next-auth/react';
-import { Check } from 'lucide-react'; // Import Check icon for checkboxes
+import { Check } from 'lucide-react'; 
 
 export function ResponseDetail({ templateId, response }) {
   const session = useSession();
@@ -59,12 +59,12 @@ export function ResponseDetail({ templateId, response }) {
 
     switch (question?.type) {
       case 'checkbox':
-        // Handle multiple-option checkbox questions
+        
         if (question.options && question.options.length >= 2) {
           try {
             const selectedIndices = JSON.parse(answer.value);
             if (Array.isArray(selectedIndices) && selectedIndices.length > 0) {
-              // Return a structured list of selected options with checkmarks
+              
               return (
                 <div className="space-y-2">
                   {question.options.map((option, index) => (

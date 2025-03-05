@@ -17,7 +17,7 @@ export default async function AdminResponsesPage() {
     throw new Error(error);
   }
 
-  // Define breadcrumb items for this page
+  
   const breadcrumbItems = [
     { href: '/', label: 'Home' },
     { href: '/admin', label: 'Admin' },

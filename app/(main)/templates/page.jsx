@@ -22,13 +22,13 @@ export default async function TemplatesPage({ searchParams }) {
     sort,
   });
 
-  // Define breadcrumb items for this page
+  
   const breadcrumbItems = [
     { href: '/', label: 'Home' },
     { label: 'Templates', isCurrent: true },
   ];
 
-  // Create the action button
+  
   const createTemplateButton = (
     <Link href="/templates/create">
       <Button>Create Template</Button>

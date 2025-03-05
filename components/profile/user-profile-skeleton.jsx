@@ -1,4 +1,4 @@
-// components/profile/user-profile-skeleton.jsx
+
 'use client';
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -9,7 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 export function UserProfileSkeleton() {
   return (
     <div className="py-6 space-y-6">
-      {/* User header with avatar and basic info */}
+      {}
       <div className="flex items-center space-x-4">
         <Avatar className="h-16 w-16">
           <AvatarFallback>
@@ -22,7 +22,7 @@ export function UserProfileSkeleton() {
         </div>
       </div>
 
-      {/* Tabs Navigation */}
+      {}
       <Tabs defaultValue="profile" className="w-full">
         <TabsList className="w-full max-w-md grid grid-cols-3">
           <TabsTrigger value="profile" className="cursor-default">
@@ -36,7 +36,7 @@ export function UserProfileSkeleton() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Profile Tab Content */}
+        {}
         <TabsContent value="profile" className="space-y-6 pt-4">
           <Card>
             <CardContent className="p-6">
@@ -46,13 +46,13 @@ export function UserProfileSkeleton() {
                     Account Information
                   </h3>
                   <div className="space-y-3">
-                    {/* Name field */}
+                    {}
                     <div className="space-y-1">
                       <div className="text-sm font-medium">Name</div>
                       <SkeletonWrapper height={36} />
                     </div>
 
-                    {/* Email field */}
+                    {}
                     <div className="space-y-1">
                       <div className="text-sm font-medium">Email</div>
                       <SkeletonWrapper height={36} />
@@ -60,7 +60,7 @@ export function UserProfileSkeleton() {
                   </div>
                 </div>
 
-                {/* API Key section (only shown if loaded) */}
+                {}
                 <div className="pt-4">
                   <h3 className="text-lg font-medium mb-2">API Access</h3>
                   <div className="space-y-3">
@@ -74,7 +74,7 @@ export function UserProfileSkeleton() {
                   </div>
                 </div>
 
-                {/* Integrations */}
+                {}
                 <div className="pt-4">
                   <h3 className="text-lg font-medium mb-2">Integrations</h3>
                   <div className="space-y-3">
@@ -99,7 +99,7 @@ export function UserProfileSkeleton() {
           </Card>
         </TabsContent>
 
-        {/* Forms Tab Content - Empty Skeleton */}
+        {}
         <TabsContent value="forms" className="pt-4">
           <Card>
             <CardContent className="p-6">
@@ -116,7 +116,7 @@ export function UserProfileSkeleton() {
           </Card>
         </TabsContent>
 
-        {/* Settings Tab Content - Empty Skeleton */}
+        {}
         <TabsContent value="settings" className="pt-4">
           <Card>
             <CardContent className="p-6">

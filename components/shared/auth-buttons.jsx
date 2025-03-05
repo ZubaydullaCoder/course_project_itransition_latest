@@ -1,4 +1,4 @@
-// components/shared/auth-buttons.jsx
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/shared/theme-toggle';

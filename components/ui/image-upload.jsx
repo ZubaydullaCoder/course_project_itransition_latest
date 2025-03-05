@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useImageUpload } from '@/hooks/use-image-upload';
 
 export function ImageUpload({ value, onChange, disabled, onUploadingChange }) {
-  // Use our custom hook
+  
   const { isUploading, uploadImage, handleCancel } = useImageUpload({
     onUploadingChange,
   });
@@ -16,7 +16,7 @@ export function ImageUpload({ value, onChange, disabled, onUploadingChange }) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Use the hook's uploadImage function
+    
     const imageUrl = await uploadImage(file);
     if (imageUrl) {
       onChange(imageUrl);

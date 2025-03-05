@@ -1,11 +1,11 @@
-// components/templates/template-detail/template-tabs/results-components/question-summaries/multiple-checkbox-summary.jsx
+
 
 import { Badge } from '@/components/ui/badge';
 
 export function MultipleCheckboxSummary({ data }) {
   const { optionStats, totalResponses } = data;
 
-  // Better error handling when no stats are available
+  
   if (!optionStats || !Array.isArray(optionStats) || optionStats.length === 0) {
     return <div className="p-4">No data available for this question</div>;
   }
@@ -30,7 +30,7 @@ export function MultipleCheckboxSummary({ data }) {
                 %
               </Badge>
             </div>
-            {/* Update progress bar height from h-3 to h-2 for consistency */}
+            {}
             <div className="w-full bg-secondary h-2 rounded-full">
               <div
                 className="bg-primary h-2 rounded-full"

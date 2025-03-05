@@ -1,4 +1,4 @@
-// components/home/templates/template-carousel-skeleton.jsx
+
 'use client';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -11,9 +11,9 @@ import {
   CardHeader,
 } from '@/components/ui/card';
 
-// Create a carousel-specific skeleton that matches template-carousel layout
+
 export function TemplateCarouselSkeleton({ count = 5 }) {
-  // Use the same Swiper config as in the real component for consistency
+  
   const carouselConfig = {
     modules: [Navigation, Pagination, A11y],
     spaceBetween: 16,

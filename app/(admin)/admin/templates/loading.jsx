@@ -1,10 +1,10 @@
-// app/(admin)/admin/templates/loading.jsx
+
 import { PageSkeleton } from '@/components/ui/page-skeleton';
 import { Card } from '@/components/ui/card';
 import { SkeletonWrapper } from '@/components/ui/skeleton-wrapper';
 
 export default function AdminTemplatesLoading() {
-  // Define breadcrumb items for this page
+  
   const breadcrumbItems = [
     { href: '/', label: 'Home' },
     { href: '/admin', label: 'Admin' },
@@ -18,21 +18,21 @@ export default function AdminTemplatesLoading() {
       description="View and manage all templates in the system"
     >
       <Card>
-        {/* Table toolbar */}
+        {}
         <div className="flex items-center justify-between p-4 border-b">
-          {/* Search input */}
+          {}
           <div className="flex items-center gap-2">
             <SkeletonWrapper width={240} height={40} />
           </div>
 
-          {/* Filters */}
+          {}
           <div className="flex items-center gap-2">
             <SkeletonWrapper width={120} height={40} />
             <SkeletonWrapper width={44} height={40} className="rounded-md" />
           </div>
         </div>
 
-        {/* Table header */}
+        {}
         <div className="border-b">
           <div className="flex items-center h-10 px-4">
             <div className="flex-1 grid grid-cols-5 gap-2">
@@ -45,7 +45,7 @@ export default function AdminTemplatesLoading() {
           </div>
         </div>
 
-        {/* Table body */}
+        {}
         <div>
           {Array(5)
             .fill(null)
@@ -95,7 +95,7 @@ export default function AdminTemplatesLoading() {
             ))}
         </div>
 
-        {/* Pagination */}
+        {}
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-2">
             <SkeletonWrapper width={100} height={20} />

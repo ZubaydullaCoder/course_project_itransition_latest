@@ -15,7 +15,7 @@ import { getResponseDetails } from '@/lib/actions/form-actions';
 import { formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import { Loader2, ExternalLink, Check } from 'lucide-react'; // Added Check icon
+import { Loader2, ExternalLink, Check } from 'lucide-react'; 
 
 export function ResponseDetailsModal({
   isOpen,
@@ -67,20 +67,20 @@ export function ResponseDetailsModal({
 
     switch (question.type) {
       case 'checkbox':
-        // Handle multiple-option checkbox questions
+        
         if (question.options && question.options.length >= 2) {
           try {
             const selectedIndices = JSON.parse(answer.value);
             if (Array.isArray(selectedIndices) && selectedIndices.length > 0) {
-              // Debug what's happening with the options
+              
               console.log('Selected indices:', selectedIndices);
               console.log('Options available:', question.options);
 
-              // Format the selected options as a readable list
+              
               return (
                 <div className="space-y-1">
                   {selectedIndices.map((index) => {
-                    // Use safe access to options and provide a fallback
+                    
                     const optionText =
                       question.options && question.options[index]
                         ? question.options[index]
@@ -102,7 +102,7 @@ export function ResponseDetailsModal({
             return `Error: ${answer.value}`;
           }
         } else {
-          // Legacy single checkbox
+          
           return answer.value === 'true' ? 'Yes' : 'No';
         }
       case 'NUMBER':

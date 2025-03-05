@@ -1,16 +1,9 @@
-// hooks/use-form-state.js
+
 'use client';
 
 import { useState, useEffect } from 'react';
 
-/**
- * Custom hook for managing complex form state and detecting changes
- * @param {Object} params - Configuration parameters
- * @param {Object} params.initialValues - Initial values to compare against
- * @param {Object} params.currentValues - Current form values
- * @param {Object} params.options - Additional options
- * @returns {Object} Form state utilities
- */
+
 export function useFormState({ initialValues, currentValues, options = {} }) {
   const {
     compareNormalized = true,
@@ -21,16 +14,16 @@ export function useFormState({ initialValues, currentValues, options = {} }) {
   const [hasChanges, setHasChanges] = useState(false);
 
   useEffect(() => {
-    // Helper function to normalize strings (trim whitespace)
+    
     const normalizeString = (value) =>
       normalizeStrings && typeof value === 'string' ? value.trim() : value;
 
-    // Helper for comparing arrays using JSON stringify
+    
     const compareArrays = (arr1, arr2) => {
       if (!arr1 || !arr2) return arr1 === arr2;
       if (arr1.length !== arr2.length) return false;
 
-      // For arrays of strings (like checkbox options), normalize before comparison
+      
       if (
         arr1.every((item) => typeof item === 'string') &&
         arr2.every((item) => typeof item === 'string')
@@ -48,7 +41,7 @@ export function useFormState({ initialValues, currentValues, options = {} }) {
       return JSON.stringify(sorted1) === JSON.stringify(sorted2);
     };
 
-    // Handle special case for comma-separated values (like tags, emails)
+    
     const compareCommaSeparated = (val1, val2) => {
       const arr1 = val1
         ? val1
@@ -67,7 +60,7 @@ export function useFormState({ initialValues, currentValues, options = {} }) {
       return JSON.stringify(arr1) === JSON.stringify(arr2);
     };
 
-    // Deep equality check for objects
+    
     const areEqual = (objA, objB, path = '') => {
       // Handle null/undefined cases
       if (objA === objB) return true;
@@ -98,7 +91,7 @@ export function useFormState({ initialValues, currentValues, options = {} }) {
               : valA === valB;
           }
 
-          // Normalize string values if requested
+          
           const normalizedA = normalizeString(valA);
           const normalizedB = normalizeString(valB);
 
@@ -109,7 +102,7 @@ export function useFormState({ initialValues, currentValues, options = {} }) {
       return normalizeString(objA) === normalizeString(objB);
     };
 
-    // Perform comparison
+    
     const formChanged = !areEqual(initialValues, currentValues);
     setHasChanges(formChanged);
   }, [
@@ -120,7 +113,7 @@ export function useFormState({ initialValues, currentValues, options = {} }) {
     deepCompare,
   ]);
 
-  // Reset function to clear changes state
+  
   const resetChanges = () => {
     setHasChanges(false);
   };

@@ -1,4 +1,4 @@
-// components/profile/salesforce-connect-form.jsx
+
 'use client';
 
 import { useState } from 'react';
@@ -99,7 +99,7 @@ const industryOptions = [
 ];
 
 export function SalesforceConnectForm({ user, onClose }) {
-  // Initialize form with default values
+  
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -124,9 +124,9 @@ export function SalesforceConnectForm({ user, onClose }) {
     successMessage: 'Successfully connected to Salesforce',
   });
 
-  // Submission handler function (will be passed to handleSubmit)
+  
   const submitToSalesforce = async (data) => {
-    // Combine user data with form data
+    
     const salesforceData = {
       ...data,
       userId: user.id,
@@ -150,7 +150,7 @@ export function SalesforceConnectForm({ user, onClose }) {
       return { error: result.error || 'Failed to connect to Salesforce' };
     }
 
-    // Return result with custom success message based on whether it's a duplicate
+    
     return {
       ...result,
       successMessage: result.isDuplicate

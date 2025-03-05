@@ -12,7 +12,7 @@ import { FormSection } from '@/components/common/form-section';
 import { PasswordField } from '@/components/common/password-field';
 
 export function RegisterForm() {
-  // Initialize form with validation
+  
   const form = useForm({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
@@ -28,7 +28,7 @@ export function RegisterForm() {
     redirectPath: '/login',
   });
 
-  // Submit handler
+  
   const onSubmit = async (data) => {
     await handleSubmit(registerUser, data, {
       customErrorMessage: 'Registration failed. Please try again.',

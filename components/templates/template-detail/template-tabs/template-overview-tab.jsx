@@ -12,7 +12,7 @@ import {
   CommentList,
 } from '@/components/templates/template-comments';
 import { TemplateLikeButton } from '@/components/templates/template-like-button';
-import { CheckCircle } from 'lucide-react'; // Import CheckCircle icon for option bullets
+import { CheckCircle } from 'lucide-react'; 
 
 export function TemplateOverviewTab({
   template,
@@ -110,7 +110,7 @@ export function TemplateOverviewTab({
                         </p>
                       )}
 
-                      {/* Display options for checkbox questions with multiple options */}
+                      {}
                       {question.type === QUESTION_TYPES.CHECKBOX &&
                         question.options &&
                         question.options.length >= 2 && (

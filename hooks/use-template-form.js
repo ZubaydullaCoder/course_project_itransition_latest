@@ -1,4 +1,4 @@
-// hooks/use-template-form.js
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -11,7 +11,7 @@ import { QUESTION_TYPES } from '@/lib/constants/questions';
 
 export function useTemplateForm(options = {}) {
   const {
-    template = null, // Pass template data for edit mode
+    template = null, 
     successMessage = template
       ? 'Template updated successfully'
       : 'Template created successfully',
@@ -24,7 +24,7 @@ export function useTemplateForm(options = {}) {
   const [isUploading, setIsUploading] = useState(false);
   const [questions, setQuestions] = useState(template?.questions || []);
 
-  // Initialize form with template data or empty defaults
+  
   const originalFormValues = useMemo(() => {
     if (!template) {
       return {
@@ -58,10 +58,10 @@ export function useTemplateForm(options = {}) {
     mode: 'onChange',
   });
 
-  // For edit mode, track changes
+  
   const formValues = form.watch();
 
-  // Track question changes
+  
   const originalQuestions = useMemo(
     () => JSON.stringify(template?.questions || []),
     [template?.questions]

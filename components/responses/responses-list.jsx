@@ -46,7 +46,7 @@ export function ResponsesList({ templateId, initialResponses, questions }) {
     const question = questions.find((q) => q.id === questionId);
     if (!question) return answer.value;
 
-    // Handle checkbox questions with multiple options
+    
     if (
       question.type === 'CHECKBOX' &&
       question.options &&

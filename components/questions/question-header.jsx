@@ -1,4 +1,4 @@
-// components/questions/question-header.jsx
+
 import { QUESTION_TYPE_LABELS } from '@/lib/constants/questions';
 import { Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';

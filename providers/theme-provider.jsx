@@ -26,7 +26,7 @@ export function ThemeProvider({ children }) {
     }
   }, [setTheme]);
 
-  // Apply theme class to document root
+  
   useEffect(() => {
     if (!mounted) return;
 
@@ -34,13 +34,13 @@ export function ThemeProvider({ children }) {
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
 
-    // Store in localStorage directly as backup
+    
     localStorage.setItem('theme', theme);
   }, [theme, mounted]);
 
-  // Prevent hydration issues - render children only after mounted
+  
   if (!mounted) {
-    return null; // Return nothing on first render
+    return null; 
   }
 
   return children;

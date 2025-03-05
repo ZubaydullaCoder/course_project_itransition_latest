@@ -1,4 +1,4 @@
-// app/(main)/templates/[templateId]/edit/loading.jsx
+
 import Link from 'next/link';
 import { PageSkeleton } from '@/components/ui/page-skeleton';
 import { SkeletonWrapper } from '@/components/ui/skeleton-wrapper';
@@ -6,11 +6,11 @@ import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
 export default function EditTemplateLoading() {
-  // Define breadcrumb items for this page - partially static but with skeleton for the template title
+  
   const breadcrumbItems = [
     { href: '/', label: 'Home' },
     { href: '/templates', label: 'Templates' },
-    // We don't know the template title yet, so this will be rendered during loading
+    
     { href: '#', label: <SkeletonWrapper width={120} height={16} /> },
     { label: 'Edit Template', isCurrent: true },
   ];
@@ -25,7 +25,7 @@ export default function EditTemplateLoading() {
     >
       <Card className="p-6">
         <div className="space-y-8">
-          {/* Image upload section */}
+          {}
           <div className="flex items-center gap-4">
             <SkeletonWrapper width={160} height={160} className="rounded-lg" />
             <div className="space-y-2">
@@ -44,37 +44,37 @@ export default function EditTemplateLoading() {
               </p>
             </div>
 
-            {/* Title field */}
+            {}
             <div className="space-y-2">
               <div className="font-medium text-sm">Title</div>
               <SkeletonWrapper height={40} />
             </div>
 
-            {/* Description field */}
+            {}
             <div className="space-y-2">
               <div className="font-medium text-sm">Description</div>
               <SkeletonWrapper height={128} />
             </div>
 
-            {/* Topic field */}
+            {}
             <div className="space-y-2">
               <div className="font-medium text-sm">Topic</div>
               <SkeletonWrapper height={40} />
             </div>
 
-            {/* Tags field */}
+            {}
             <div className="space-y-2">
               <div className="font-medium text-sm">Tags</div>
               <SkeletonWrapper height={40} />
             </div>
 
-            {/* Visibility section */}
+            {}
             <div className="space-y-2">
               <div className="font-medium text-sm">Visibility</div>
               <SkeletonWrapper height={40} />
             </div>
 
-            {/* Allowed users field - only shown if template is not public */}
+            {}
             <div className="space-y-2">
               <div className="font-medium text-sm">Allowed Users</div>
               <SkeletonWrapper height={40} />
@@ -96,7 +96,7 @@ export default function EditTemplateLoading() {
               <SkeletonWrapper width={140} height={40} />
             </div>
 
-            {/* Question cards */}
+            {}
             {Array(2)
               .fill(null)
               .map((_, index) => (
@@ -126,7 +126,7 @@ export default function EditTemplateLoading() {
               ))}
           </div>
 
-          {/* Form action buttons */}
+          {}
           <div className="flex items-center gap-4 pt-4">
             <SkeletonWrapper width={120} height={40} />
             <SkeletonWrapper width={120} height={40} />

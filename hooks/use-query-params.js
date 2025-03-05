@@ -1,17 +1,13 @@
-// hooks/use-query-params.js
+
 'use client';
 
 import { useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import qs from 'query-string'; // Popular query string management library
+import qs from 'query-string'; 
 
-/**
- * Custom hook for managing URL query parameters
- * @param {Object} options - Configuration options
- * @param {string} options.baseUrl - Base URL to use for navigation (default: current path)
- */
+
 export function useQueryParams(options = {}) {
-  // These hooks are correctly at the top level
+  
   const router = useRouter();
   const searchParams = useSearchParams();
   const { baseUrl = '' } = options;
@@ -59,7 +55,7 @@ export function useQueryParams(options = {}) {
         { skipNull: true, skipEmptyString: true }
       );
 
-      // Navigate
+      
       if (replace) {
         router.replace(url);
       } else {
@@ -71,25 +67,23 @@ export function useQueryParams(options = {}) {
     [router, getParams, baseUrl]
   );
 
-  /**
-   * Toggle a boolean param or remove it if it matches the current value
-   */
+  
   const toggleParam = useCallback(
     (key, value) => {
       const current = getParams();
       const currentValue = current[key];
 
-      // If current value matches the toggle value, remove it
+      
       if (currentValue === value) {
         return setParams({ [key]: undefined });
       }
-      // Otherwise set it
+      
       return setParams({ [key]: value });
     },
     [getParams, setParams]
   );
 
-  // Calculate params outside of the returned object
+  
   const currentParams = getParams();
 
   return {

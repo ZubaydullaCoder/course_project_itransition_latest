@@ -1,11 +1,11 @@
-// app/(main)/templates/create/loading.jsx
+
 import { PageSkeleton } from '@/components/ui/page-skeleton';
 import { SkeletonWrapper } from '@/components/ui/skeleton-wrapper';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
 export default function CreateTemplateLoading() {
-  // Define breadcrumb items for this page
+  
   const breadcrumbItems = [
     { href: '/', label: 'Home' },
     { href: '/templates', label: 'Templates' },
@@ -20,7 +20,7 @@ export default function CreateTemplateLoading() {
     >
       <Card className="p-6">
         <div className="space-y-8">
-          {/* Image upload section */}
+          {}
           <div className="flex items-center gap-4">
             <SkeletonWrapper width={160} height={160} className="rounded-lg" />
             <div className="space-y-2">
@@ -39,25 +39,25 @@ export default function CreateTemplateLoading() {
               </p>
             </div>
 
-            {/* Title field */}
+            {}
             <div className="space-y-2">
               <div className="font-medium text-sm">Title</div>
               <SkeletonWrapper height={40} />
             </div>
 
-            {/* Description field */}
+            {}
             <div className="space-y-2">
               <div className="font-medium text-sm">Description</div>
               <SkeletonWrapper height={128} />
             </div>
 
-            {/* Topic field */}
+            {}
             <div className="space-y-2">
               <div className="font-medium text-sm">Topic</div>
               <SkeletonWrapper height={40} />
             </div>
 
-            {/* Tags field */}
+            {}
             <div className="space-y-2">
               <div className="font-medium text-sm">Tags</div>
               <SkeletonWrapper height={40} />
@@ -79,7 +79,7 @@ export default function CreateTemplateLoading() {
               <SkeletonWrapper width={140} height={40} />
             </div>
 
-            {/* Question cards */}
+            {}
             {Array(2)
               .fill(null)
               .map((_, index) => (

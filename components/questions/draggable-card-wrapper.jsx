@@ -1,4 +1,4 @@
-// components/questions/draggable-card-wrapper.jsx
+
 import { GripVertical as Grip } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 
