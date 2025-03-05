@@ -1,68 +1,113 @@
-import { Skeleton } from '@/components/ui/skeleton';
-import { Heading } from '@/components/ui/heading';
+// app/(admin)/admin/templates/loading.jsx
+import { PageSkeleton } from '@/components/ui/page-skeleton';
+import { Card } from '@/components/ui/card';
+import { SkeletonWrapper } from '@/components/ui/skeleton-wrapper';
 
 export default function AdminTemplatesLoading() {
-  return (
-    <div className="space-y-6">
-      {}
-      <Heading
-        title="Templates Management"
-        description="View and manage all templates in the system"
-      />
+  // Define breadcrumb items for this page
+  const breadcrumbItems = [
+    { href: '/', label: 'Home' },
+    { href: '/admin', label: 'Admin' },
+    { label: 'Templates', isCurrent: true },
+  ];
 
-      {}
-      <div className="rounded-md border">
-        {}
+  return (
+    <PageSkeleton
+      breadcrumbItems={breadcrumbItems}
+      title="Templates Management"
+      description="View and manage all templates in the system"
+    >
+      <Card>
+        {/* Table toolbar */}
+        <div className="flex items-center justify-between p-4 border-b">
+          {/* Search input */}
+          <div className="flex items-center gap-2">
+            <SkeletonWrapper width={240} height={40} />
+          </div>
+
+          {/* Filters */}
+          <div className="flex items-center gap-2">
+            <SkeletonWrapper width={120} height={40} />
+            <SkeletonWrapper width={44} height={40} className="rounded-md" />
+          </div>
+        </div>
+
+        {/* Table header */}
         <div className="border-b">
-          <div className="flex h-14 items-center px-4">
-            <div className="flex flex-1 items-center gap-4">
-              <Skeleton className="h-4 w-[100px]" /> {}
-              <Skeleton className="h-4 w-[100px]" /> {}
-              <Skeleton className="h-4 w-[100px]" /> {}
-              <Skeleton className="h-4 w-[100px]" /> {}
+          <div className="flex items-center h-10 px-4">
+            <div className="flex-1 grid grid-cols-5 gap-2">
+              <SkeletonWrapper height={16} className="w-[80%]" />
+              <SkeletonWrapper height={16} className="w-[70%]" />
+              <SkeletonWrapper height={16} className="w-[60%]" />
+              <SkeletonWrapper height={16} className="w-[50%]" />
+              <SkeletonWrapper height={16} className="w-[40%]" />
             </div>
           </div>
         </div>
 
-        {}
+        {/* Table body */}
         <div>
           {Array(5)
             .fill(null)
             .map((_, index) => (
               <div key={index} className="border-b px-4 py-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-1 items-center gap-4">
-                    {}
-                    <div className="flex items-center gap-3">
-                      <Skeleton className="h-12 w-12 rounded" /> {}
-                      <div className="space-y-1">
-                        <Skeleton className="h-4 w-[200px]" /> {}
-                        <Skeleton className="h-3 w-[150px]" />{' '}
-                        {}
-                      </div>
+                <div className="grid grid-cols-5 gap-2 items-center">
+                  <div className="flex items-center gap-2">
+                    <SkeletonWrapper
+                      width={36}
+                      height={36}
+                      className="rounded-md"
+                    />
+                    <div className="space-y-1">
+                      <SkeletonWrapper width={160} height={16} />
+                      <SkeletonWrapper width={100} height={14} />
                     </div>
-
-                    {}
-                    <div className="w-[150px]">
-                      <Skeleton className="h-4 w-[120px]" />
-                    </div>
-
-                    {}
-                    <div className="w-[100px]">
-                      <Skeleton className="h-6 w-16" />
-                    </div>
-
-                    {}
-                    <div className="flex items-center gap-2">
-                      <Skeleton className="h-8 w-8" />
-                      <Skeleton className="h-8 w-8" />
-                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <SkeletonWrapper width={120} height={16} />
+                    <SkeletonWrapper width={80} height={14} />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <SkeletonWrapper
+                      width={60}
+                      height={24}
+                      className="rounded-full"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <SkeletonWrapper width={80} height={16} />
+                    <SkeletonWrapper width={50} height={14} />
+                  </div>
+                  <div className="flex items-center justify-end gap-2">
+                    <SkeletonWrapper
+                      width={36}
+                      height={36}
+                      className="rounded-md"
+                    />
+                    <SkeletonWrapper
+                      width={36}
+                      height={36}
+                      className="rounded-md"
+                    />
                   </div>
                 </div>
               </div>
             ))}
         </div>
-      </div>
-    </div>
+
+        {/* Pagination */}
+        <div className="flex items-center justify-between p-4">
+          <div className="flex items-center gap-2">
+            <SkeletonWrapper width={100} height={20} />
+          </div>
+          <div className="flex items-center gap-2">
+            <SkeletonWrapper width={36} height={36} className="rounded-md" />
+            <SkeletonWrapper width={36} height={36} className="rounded-md" />
+            <SkeletonWrapper width={36} height={36} className="rounded-md" />
+            <SkeletonWrapper width={36} height={36} className="rounded-md" />
+          </div>
+        </div>
+      </Card>
+    </PageSkeleton>
   );
 }

@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { Loader2 } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -13,16 +14,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
@@ -31,8 +24,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { useFormSubmission } from '@/hooks/use-form-submission';
+import { FormSection } from '@/components/common/form-section';
+import { FormFieldWithIcon } from '@/components/common/form-field-with-icon';
 
 const formSchema = z.object({
   companyName: z.string().min(2, {
@@ -97,9 +99,6 @@ const industryOptions = [
 ];
 
 export function SalesforceConnectForm({ user, onClose }) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
-
   // Initialize form with default values
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -120,51 +119,51 @@ export function SalesforceConnectForm({ user, onClose }) {
     },
   });
 
-  const onSubmit = async (data) => {
-    setIsSubmitting(true);
+  // Use the form submission hook
+  const { isSubmitting, handleSubmit } = useFormSubmission({
+    successMessage: 'Successfully connected to Salesforce',
+  });
 
-    try {
-      // Combine user data with form data
-      const salesforceData = {
-        ...data,
-        userId: user.id,
-        firstName: user.name?.split(' ')[0] || '',
-        lastName: user.name?.split(' ').slice(1).join(' ') || '',
-        email: user.email,
-      };
+  // Submission handler function (will be passed to handleSubmit)
+  const submitToSalesforce = async (data) => {
+    // Combine user data with form data
+    const salesforceData = {
+      ...data,
+      userId: user.id,
+      firstName: user.name?.split(' ')[0] || '',
+      lastName: user.name?.split(' ').slice(1).join(' ') || '',
+      email: user.email,
+    };
 
-      // Call API to submit to Salesforce
-      const response = await fetch('/api/salesforce/create-account', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(salesforceData),
-      });
+    // Call API to submit to Salesforce
+    const response = await fetch('/api/salesforce/create-account', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(salesforceData),
+    });
 
-      const result = await response.json();
+    const result = await response.json();
 
-      if (!response.ok) {
-        throw new Error(result.error || 'Something went wrong');
-      }
-
-      toast({
-        title: result.isDuplicate ? 'Information Found' : 'Success!',
-        description: result.isDuplicate
-          ? 'You already have a record in Salesforce'
-          : 'Your information has been sent to Salesforce',
-      });
-
-      onClose();
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: error.message || 'Failed to connect to Salesforce',
-      });
-    } finally {
-      setIsSubmitting(false);
+    if (!response.ok) {
+      return { error: result.error || 'Failed to connect to Salesforce' };
     }
+
+    // Return result with custom success message based on whether it's a duplicate
+    return {
+      ...result,
+      successMessage: result.isDuplicate
+        ? 'You already have a record in Salesforce'
+        : 'Your information has been sent to Salesforce',
+    };
+  };
+
+  const onSubmit = async (data) => {
+    const result = await handleSubmit(submitToSalesforce, data, {
+      onSuccess: () => onClose(),
+    });
+    return result;
   };
 
   return (
@@ -183,19 +182,13 @@ export function SalesforceConnectForm({ user, onClose }) {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-6 pt-2"
           >
-            <div className="space-y-4">
-              <FormField
+            <FormSection title="Company Information">
+              <FormFieldWithIcon
                 control={form.control}
                 name="companyName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Company Name *</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Your company name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Company Name"
+                placeholder="Your company name"
+                required
               />
 
               <FormField
@@ -227,153 +220,89 @@ export function SalesforceConnectForm({ user, onClose }) {
               />
 
               <div className="grid grid-cols-2 gap-4">
-                <FormField
+                <FormFieldWithIcon
                   control={form.control}
-                  name="jobTitle"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Job Title</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Your job title" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  name="website"
+                  label="Website"
+                  placeholder="https://example.com"
                 />
 
-                <FormField
-                  control={form.control}
-                  name="department"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Department</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Your department" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Your Phone</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Your phone number" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
+                <FormFieldWithIcon
                   control={form.control}
                   name="companyPhone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Company Phone</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Company phone number" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Company Phone"
+                  placeholder="Company phone number"
+                />
+              </div>
+            </FormSection>
+
+            <FormSection title="Your Position" withSeparator>
+              <div className="grid grid-cols-2 gap-4">
+                <FormFieldWithIcon
+                  control={form.control}
+                  name="jobTitle"
+                  label="Job Title"
+                  placeholder="Your job title"
+                />
+
+                <FormFieldWithIcon
+                  control={form.control}
+                  name="department"
+                  label="Department"
+                  placeholder="Your department"
                 />
               </div>
 
-              <FormField
+              <FormFieldWithIcon
                 control={form.control}
-                name="website"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Website</FormLabel>
-                    <FormControl>
-                      <Input placeholder="https://example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                name="phone"
+                label="Your Phone"
+                placeholder="Your phone number"
               />
+            </FormSection>
 
-              <FormField
+            <FormSection title="Address Information" withSeparator>
+              <FormFieldWithIcon
                 control={form.control}
                 name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Street Address</FormLabel>
-                    <FormControl>
-                      <Input placeholder="123 Main St" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Street Address"
+                placeholder="123 Main St"
               />
 
               <div className="grid grid-cols-2 gap-4">
-                <FormField
+                <FormFieldWithIcon
                   control={form.control}
                   name="city"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>City</FormLabel>
-                      <FormControl>
-                        <Input placeholder="City" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="City"
+                  placeholder="City"
                 />
 
-                <FormField
+                <FormFieldWithIcon
                   control={form.control}
                   name="state"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>State/Province</FormLabel>
-                      <FormControl>
-                        <Input placeholder="State or Province" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="State/Province"
+                  placeholder="State or Province"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <FormField
+                <FormFieldWithIcon
                   control={form.control}
                   name="postalCode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Postal Code</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Postal/ZIP code" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Postal Code"
+                  placeholder="Postal/ZIP code"
                 />
 
-                <FormField
+                <FormFieldWithIcon
                   control={form.control}
                   name="country"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Country</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Country" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Country"
+                  placeholder="Country"
                 />
               </div>
+            </FormSection>
 
+            <FormSection title="Additional Information" withSeparator>
               <FormField
                 control={form.control}
                 name="description"
@@ -391,7 +320,7 @@ export function SalesforceConnectForm({ user, onClose }) {
                   </FormItem>
                 )}
               />
-            </div>
+            </FormSection>
 
             <DialogFooter>
               <Button variant="outline" type="button" onClick={onClose}>
