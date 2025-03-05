@@ -1,125 +1,138 @@
-import { Skeleton } from '@/components/ui/skeleton';
-import { Card } from '@/components/ui/card';
+// app/(main)/templates/[templateId]/edit/loading.jsx
 import Link from 'next/link';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
+import { PageSkeleton } from '@/components/ui/page-skeleton';
+import { SkeletonWrapper } from '@/components/ui/skeleton-wrapper';
+import { Card } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 export default function EditTemplateLoading() {
+  // Define breadcrumb items for this page - partially static but with skeleton for the template title
+  const breadcrumbItems = [
+    { href: '/', label: 'Home' },
+    { href: '/templates', label: 'Templates' },
+    // We don't know the template title yet, so this will be rendered during loading
+    { href: '#', label: <SkeletonWrapper width={120} height={16} /> },
+    { label: 'Edit Template', isCurrent: true },
+  ];
+
   return (
-    <div className="container max-w-3xl py-6 space-y-6">
-      {/* Keep the breadcrumb structure visible but with skeleton title */}
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/" asChild>
-              <Link href="/">Home</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/templates" asChild>
-              <Link href="/templates">Templates</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <Skeleton className="h-4 w-40" />
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Edit Template</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
-      {/* Keep the title and description visible as it's static */}
-      <div>
-        <h1 className="text-2xl font-bold">Edit Template</h1>
-        <p className="text-muted-foreground">
-          Update your template details and questions
-        </p>
-      </div>
-
-      {/* Form skeleton */}
-      <div className="space-y-8">
-        {/* Image upload section */}
-        <div className="flex items-center gap-4">
-          <Skeleton className="w-40 h-40 rounded-lg" />
-          <div className="space-y-2">
-            <Skeleton className="h-10 w-[120px]" />
-            <Skeleton className="h-4 w-[140px]" />
-          </div>
-        </div>
-
-        {/* Template details */}
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Skeleton className="h-5 w-20" />
-            <Skeleton className="h-10 w-full" />
-          </div>
-          <div className="space-y-2">
-            <Skeleton className="h-5 w-28" />
-            <Skeleton className="h-32 w-full" />
-          </div>
-        </div>
-
-        {/* Topic */}
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-20" />
-          <Skeleton className="h-10 w-full" />
-        </div>
-
-        {/* Tags */}
-        <div className="space-y-2">
-          <Skeleton className="h-5 w-16" />
-          <Skeleton className="h-10 w-full" />
-        </div>
-
-        {/* Questions section */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium">Questions</h3>
-            <Skeleton className="h-10 w-[140px]" />
+    <PageSkeleton
+      breadcrumbItems={breadcrumbItems}
+      title="Edit Template"
+      description="Update your template details and questions"
+      maxWidth="3xl"
+      spacing="6"
+    >
+      <Card className="p-6">
+        <div className="space-y-8">
+          {/* Image upload section */}
+          <div className="flex items-center gap-4">
+            <SkeletonWrapper width={160} height={160} className="rounded-lg" />
+            <div className="space-y-2">
+              <SkeletonWrapper width={120} height={40} />
+              <SkeletonWrapper variant="text" width={140} />
+            </div>
           </div>
 
-          {/* Question cards */}
-          {Array(2)
-            .fill(null)
-            .map((_, index) => (
-              <Card key={index} className="p-6 space-y-4">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-4 flex-1">
-                    <div className="space-y-2">
-                      <Skeleton className="h-5 w-20" />
-                      <Skeleton className="h-10 w-full" />
+          <Separator />
+
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-medium">Basic Information</h3>
+              <p className="text-sm text-muted-foreground">
+                Enter the basic details of your template
+              </p>
+            </div>
+
+            {/* Title field */}
+            <div className="space-y-2">
+              <div className="font-medium text-sm">Title</div>
+              <SkeletonWrapper height={40} />
+            </div>
+
+            {/* Description field */}
+            <div className="space-y-2">
+              <div className="font-medium text-sm">Description</div>
+              <SkeletonWrapper height={128} />
+            </div>
+
+            {/* Topic field */}
+            <div className="space-y-2">
+              <div className="font-medium text-sm">Topic</div>
+              <SkeletonWrapper height={40} />
+            </div>
+
+            {/* Tags field */}
+            <div className="space-y-2">
+              <div className="font-medium text-sm">Tags</div>
+              <SkeletonWrapper height={40} />
+            </div>
+
+            {/* Visibility section */}
+            <div className="space-y-2">
+              <div className="font-medium text-sm">Visibility</div>
+              <SkeletonWrapper height={40} />
+            </div>
+
+            {/* Allowed users field - only shown if template is not public */}
+            <div className="space-y-2">
+              <div className="font-medium text-sm">Allowed Users</div>
+              <SkeletonWrapper height={40} />
+            </div>
+          </div>
+
+          <Separator className="my-8" />
+
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-medium">Questions</h3>
+              <p className="text-sm text-muted-foreground">
+                Add, remove, or reorder your template questions
+              </p>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <SkeletonWrapper variant="subtitle" />
+              <SkeletonWrapper width={140} height={40} />
+            </div>
+
+            {/* Question cards */}
+            {Array(2)
+              .fill(null)
+              .map((_, index) => (
+                <Card key={index} className="p-6 space-y-4">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-4 flex-1">
+                      <div className="space-y-2">
+                        <div className="font-medium text-sm">Question Type</div>
+                        <SkeletonWrapper height={40} />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="font-medium text-sm">Title</div>
+                        <SkeletonWrapper height={40} />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="font-medium text-sm">Description</div>
+                        <SkeletonWrapper height={80} />
+                      </div>
+                      <div className="space-y-2">
+                        <div className="font-medium text-sm">Options</div>
+                        <SkeletonWrapper height={40} />
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Skeleton className="h-5 w-28" />
-                      <Skeleton className="h-20 w-full" />
-                    </div>
-                    <div className="space-y-2">
-                      <Skeleton className="h-5 w-24" />
-                      <Skeleton className="h-10 w-full" />
-                    </div>
+                    <SkeletonWrapper width={40} height={40} />
                   </div>
-                  <Skeleton className="h-10 w-10" />
-                </div>
-              </Card>
-            ))}
-        </div>
+                </Card>
+              ))}
+          </div>
 
-        {/* Form buttons */}
-        <div className="flex items-center gap-4">
-          <Skeleton className="h-10 w-[100px]" />
-          <Skeleton className="h-10 w-[100px]" />
+          {/* Form action buttons */}
+          <div className="flex items-center gap-4 pt-4">
+            <SkeletonWrapper width={120} height={40} />
+            <SkeletonWrapper width={120} height={40} />
+          </div>
         </div>
-      </div>
-    </div>
+      </Card>
+    </PageSkeleton>
   );
 }
