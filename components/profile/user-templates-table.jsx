@@ -39,12 +39,7 @@ export function UserTemplatesTable() {
     direction: 'desc',
   });
 
-  // For direct template actions (view, edit)
-  // We only need navigating functions so we can create a simplified version
-  const templateActions = useTemplateActions({
-    // No specific template here as we're using it for navigation only
-    shouldRefreshAfterDelete: false,
-  });
+  // Comment: Removed unused templateActions variable since we're using direct Links instead
 
   useEffect(() => {
     async function loadTemplates() {
@@ -256,19 +251,7 @@ export function UserTemplatesTable() {
               </TableHeader>
               <TableBody>
                 {sortedTemplates.map((template) => {
-                  // Create an actions object for this specific template
-                  const actions = {
-                    navigateToPreview: () =>
-                      templateActions.navigateToPreview({
-                        ...templateActions,
-                        template,
-                      }),
-                    navigateToEdit: () =>
-                      templateActions.navigateToEdit({
-                        ...templateActions,
-                        template,
-                      }),
-                  };
+                  // We're directly using Links instead of the actions object
 
                   return (
                     <TableRow key={template.id}>
