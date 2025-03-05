@@ -1,21 +1,29 @@
-
 'use client';
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useSearchParams } from 'next/navigation';
 
 export function SalesforceTestButton() {
   const [isLoading, setIsLoading] = useState(false);
   const [debugInfo, setDebugInfo] = useState(null);
   const { toast } = useToast();
+  const searchParams = useSearchParams();
 
   const testSalesforceAuth = async () => {
     setIsLoading(true);
     try {
       
-      const response = await fetch('/api/salesforce/auth');
+      const userId = searchParams.get('userId');
+
+      
+      const url = userId
+        ? `/api/salesforce/auth?returnTo=${encodeURIComponent(`/profile?userId=${userId}`)}`
+        : '/api/salesforce/auth';
+
+      const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error('Failed to get authorization URL');
@@ -24,11 +32,9 @@ export function SalesforceTestButton() {
       const data = await response.json();
 
       if (data.authUrl) {
-        
         setDebugInfo(data.authUrl);
         console.log('Salesforce Auth URL:', data.authUrl);
 
-        
         window.open(data.authUrl, '_blank');
 
         toast({
