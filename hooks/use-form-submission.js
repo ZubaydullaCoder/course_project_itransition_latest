@@ -29,7 +29,7 @@ export function useFormSubmission(options = {}) {
     try {
       const result = await submitFn(data);
 
-      // In your form submission handler
+      
       if (result.isDuplicate) {
         toast({
           title: 'Connected to Salesforce',

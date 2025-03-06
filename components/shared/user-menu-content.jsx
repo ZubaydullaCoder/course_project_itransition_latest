@@ -5,9 +5,9 @@ import { SubMenu } from '@/components/ui/submenu';
 import { UserProfileItem } from '@/components/ui/user-profile-item';
 
 export function UserMenuContent({ user, handleSignOut }) {
-  // Create a wrapper function that prevents the default behavior
+  
   const handleSignOutClick = (e) => {
-    e.preventDefault(); // Prevent default link behavior
+    e.preventDefault(); 
     handleSignOut(user);
   };
 
@@ -38,7 +38,7 @@ export function UserMenuContent({ user, handleSignOut }) {
 
       <DropdownMenuSeparator />
 
-      {/* Modified sign out link with explicit event prevention */}
+      {}
       <MenuLink href="#" onClick={handleSignOutClick}>
         Sign Out
       </MenuLink>

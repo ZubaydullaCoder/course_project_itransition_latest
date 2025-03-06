@@ -25,7 +25,7 @@ export function useLogin() {
   const { isSubmitting, handleSubmit } = useFormSubmission();
 
   const isValidReturnUrl = (url) => {
-    return url && url.startsWith('/') && !url.startsWith('//');
+    return url && url.startsWith('/') && !url.startsWith('
   };
 
   const onSubmit = async (data) => {
