@@ -1,16 +1,10 @@
-
 'use client';
 
 import { useState, useTransition, useOptimistic } from 'react';
 import { useQueryParams } from '@/hooks/use-query-params';
 
-
 export function useOptimisticUI(initialValue, paramName, options = {}) {
-  const {
-    baseUrl = '/templates',
-    preventToggle = false,
-    debounceTime = 0,
-  } = options;
+  const { baseUrl = '/templates', preventToggle = false } = options;
 
   const { params, setParams } = useQueryParams({ baseUrl });
   const [isPending, startTransition] = useTransition();

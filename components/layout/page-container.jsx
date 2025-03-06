@@ -1,10 +1,8 @@
-
-'use client'; 
+'use client';
 
 import { PageBreadcrumb } from '@/components/common/page-breadcrumb';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
-
 
 export function PageContainer({
   children,
@@ -30,7 +28,6 @@ export function PageContainer({
   return (
     <div
       className={cn(
-        
         isAdminPage
           ? 'w-full py-2 space-y-6 px-1'
           : `container max-w-${maxWidth} py-2 xl:px-0 space-y-${spacing}`,

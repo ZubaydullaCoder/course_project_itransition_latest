@@ -1,11 +1,9 @@
-
 import { PageSkeleton } from '@/components/ui/page-skeleton';
 import { SkeletonWrapper } from '@/components/ui/skeleton-wrapper';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
 export default function CreateTemplateLoading() {
-  
   const breadcrumbItems = [
     { href: '/', label: 'Home' },
     { href: '/templates', label: 'Templates' },
@@ -17,10 +15,10 @@ export default function CreateTemplateLoading() {
       breadcrumbItems={breadcrumbItems}
       title="Create Template"
       description="Create a new template for your forms"
+      maxWidth="3xl"
     >
       <Card className="p-6">
         <div className="space-y-8">
-          {}
           <div className="flex items-center gap-4">
             <SkeletonWrapper width={160} height={160} className="rounded-lg" />
             <div className="space-y-2">

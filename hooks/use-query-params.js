@@ -1,13 +1,10 @@
-
 'use client';
 
 import { useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import qs from 'query-string'; 
-
+import qs from 'query-string';
 
 export function useQueryParams(options = {}) {
-  
   const router = useRouter();
   const searchParams = useSearchParams();
   const { baseUrl = '' } = options;
@@ -55,7 +52,6 @@ export function useQueryParams(options = {}) {
         { skipNull: true, skipEmptyString: true }
       );
 
-      
       if (replace) {
         router.replace(url);
       } else {
@@ -67,23 +63,20 @@ export function useQueryParams(options = {}) {
     [router, getParams, baseUrl]
   );
 
-  
   const toggleParam = useCallback(
     (key, value) => {
       const current = getParams();
       const currentValue = current[key];
 
-      
       if (currentValue === value) {
         return setParams({ [key]: undefined });
       }
-      
+
       return setParams({ [key]: value });
     },
     [getParams, setParams]
   );
 
-  
   const currentParams = getParams();
 
   return {
