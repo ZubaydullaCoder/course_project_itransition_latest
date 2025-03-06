@@ -1,10 +1,8 @@
-
 'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-
 
 export function useFormSubmission(options = {}) {
   const {
@@ -18,7 +16,6 @@ export function useFormSubmission(options = {}) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  
   const handleSubmit = async (submitFn, data, options = {}) => {
     const {
       onSuccess,
@@ -32,7 +29,21 @@ export function useFormSubmission(options = {}) {
     try {
       const result = await submitFn(data);
 
-      
+      // In your form submission handler
+      if (result.isDuplicate) {
+        toast({
+          title: 'Connected to Salesforce',
+          description:
+            'Your information was matched with existing Salesforce records',
+        });
+      } else {
+        toast({
+          title: 'Connected to Salesforce',
+          description:
+            'New records were created in Salesforce with your information',
+        });
+      }
+
       if (result?.error) {
         toast({
           variant: 'destructive',
@@ -43,18 +54,15 @@ export function useFormSubmission(options = {}) {
         return false;
       }
 
-      
       toast({
         title: 'Success',
         description: customSuccessMessage || successMessage,
       });
 
-      
       if (onSuccess) {
         await onSuccess(result);
       }
 
-      
       if (shouldRefreshPage) {
         router.refresh();
       }
